@@ -1,0 +1,53 @@
+# ========================================
+# 生产环境配置
+# ========================================
+spring:
+  cloud:
+    nacos:
+      # ========================================
+      # Nacos Config 配置
+      # ========================================
+      config:
+        enabled: true
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+        namespace: ${NACOS_NAMESPACE:youyu-cloud}_${spring.profiles.active}
+        group: ${NACOS_GROUP:DEFAULT_GROUP}
+        file-extension: yaml
+        refresh-enabled: true
+
+      # ========================================
+      # Nacos Discovery 配置
+      # ========================================
+      discovery:
+        enabled: true
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+        namespace: ${NACOS_NAMESPACE:youyu-cloud}_${spring.profiles.active}
+        register-enabled: true
+        heart-beat-interval: 5000
+        heart-beat-timeout: 15000
+
+  # ========================================
+  # 从 Nacos 导入配置（生产环境默认加载）
+  # ========================================
+  config:
+    import:
+      - "nacos:common-redis.yaml"                      # 公共 Redis 配置
+      - "nacos:gateway-sentinel.yaml"                  # Gateway 专用 Sentinel 配置
+      - "nacos:${spring.application.name}.yaml"       # 应用专属配置
+
+server:
+  port: 8080
+
+# ========================================
+# IP 限流配置 (可选,默认关闭)
+# ========================================
+# 注意:
+# - Gateway 已实现 GlobalIpRateLimitFilter,无需在此配置
+# - 微服务如需启用 IP 限流,可取消注释并设置 enabled=true
+demo:
+  ip-rate-limit:
+    enabled: false                    # 是否启用 (默认 false)
+    resource-name: api_rate_limit     # 资源名称
+    max-requests-per-second: 50       # 每个IP每秒最大请求数
+
+

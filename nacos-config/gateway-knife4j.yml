@@ -1,0 +1,20 @@
+# Knife4j Gateway 聚合配置
+knife4j:
+  enable: true
+  gateway:
+    resources:
+      - name: youyu-auth
+        url: /youyu-auth/v3/api-docs
+        version: "3.0"
+      - name: youyu-user
+        url: /youyu-user/v3/api-docs
+        version: "3.0"
+      - name: youyu-product
+        url: /youyu-product/v3/api-docs
+        version: "3.0"
+      - name: youyu-order
+        url: /youyu-order/v3/api-docs
+        version: "3.0"
+      - name: youyu-seckill
+        url: /youyu-seckill/v3/api-docs
+        version: "3.0"

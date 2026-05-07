@@ -1,0 +1,14 @@
+# ========================================
+# demo-service 服务专属配置（Nacos）
+# ========================================
+#
+# 使用说明：
+# 1. 此文件是 Nacos 配置中心的 demo-service 专属配置
+# 2. Nacos 配置信息：
+#    - Data ID: demo-service.yaml
+#    - Group: DEFAULT_GROUP
+#    - Namespace: youyu-cloud
+#    - 配置格式: YAML
+# ========================================
+# 正常什么都可以不用配置，因为在 application.yml 中已经配置了默认值，
+# 只有在需要自定义配置时才需要添加。

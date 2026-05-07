@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.youyu</groupId>
+		<artifactId>youyu</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>youyu-user</artifactId>
+	<packaging>pom</packaging>
+	<name>youyu-user</name>
+	<description>User Service Parent POM</description>
+
+	<modules>
+		<module>youyu-user-api</module>
+		<module>youyu-user-impl</module>
+		<module>youyu-user-sdk</module>
+		<module>youyu-user-bootstrap</module>
+	</modules>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-user-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-user-impl</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-user-sdk</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-user-bootstrap</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+</project>

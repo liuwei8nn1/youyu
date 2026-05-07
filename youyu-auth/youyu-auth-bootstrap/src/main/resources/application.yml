@@ -1,0 +1,17 @@
+# ========================================
+# 应用基础配置
+# ========================================
+server:
+  port: 8080
+  # 启用虚拟线程（JDK 21+）
+  tomcat:
+    threads:
+      virtual: true
+
+spring:
+  application:
+    name: auth-service
+  # 默认激活 prod 环境（生产环境）
+  profiles:
+    active: dev
+

@@ -1,0 +1,24 @@
+# ========================================
+# 应用基础配置（生产环境默认配置）
+# ========================================
+server:
+  port: 8080
+spring:
+  application:
+    name: gateway-service
+  # 默认激活 dev 环境（开发环境）
+  profiles:
+    active: dev
+
+# ========================================
+# IP 限流配置 (可选,默认关闭)
+# ========================================
+# 注意: 
+# - Gateway 已实现 GlobalIpRateLimitFilter,无需在此配置
+# - 微服务如需启用 IP 限流,可取消注释并设置 enabled=true
+demo:
+  ip-rate-limit:
+    enabled: false                    # 是否启用 (默认 false)
+    resource-name: api_rate_limit     # 资源名称
+    max-requests-per-second: 50       # 每个IP每秒最大请求数
+

@@ -1,0 +1,32 @@
+# ========================================
+# 公共 RocketMQ 配置（Nacos）
+# ========================================
+# 
+# 使用说明：
+# 1. 此文件是 Nacos 配置中心的公共 RocketMQ 配置
+# 2. 所有需要消息队列的微服务都可以引用此配置
+# 3. Nacos 配置信息：
+#    - Data ID: common-rocketmq.yaml
+#    - Group: DEFAULT_GROUP
+#    - Namespace: youyu-cloud
+#    - 配置格式: YAML
+#
+# 使用方式：在 application.yml 中导入
+#   spring:
+#     config:
+#       import:
+#         - "nacos:common-rocketmq.yaml"
+# ========================================
+
+rocketmq:
+  name-server: ${ROCKETMQ_NAME_SERVER:prod-rocketmq-server:9876}
+  
+  # ========================================
+  # 生产者通用配置
+  # ========================================
+  producer:
+    send-message-timeout: 3000      # 发送消息超时时间（毫秒）
+    retry-times-when-send-failed: 2 # 同步发送失败重试次数
+    retry-times-when-send-async-failed: 2 # 异步发送失败重试次数
+    max-message-size: 4194304       # 最大消息大小（4MB）
+    compress-message-body-threshold: 4096 # 消息压缩阈值（4KB）

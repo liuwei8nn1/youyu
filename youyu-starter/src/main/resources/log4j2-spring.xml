@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" packages="com.youyu.framework.logging.converter">
+
+	<Properties>
+		<property name="appName" value="${spring:spring.application.name:-demo}-${spring:spring.profiles.active:-dev}"/>
+		<Property name="LOG_EXCEPTION_CONVERSION_WORD">%thinEx{com.youyu}</Property>
+		<Property name="LOG_LEVEL_PATTERN">%5p</Property>
+		<Property name="LOG_DATEFORMAT_PATTERN">yyyy-MM-dd HH:mm:ss.SSS</Property>
+		<Property name="PATTERN">%d{${LOG_DATEFORMAT_PATTERN}} ${sys:LOG_LEVEL_PATTERN} ${appName} [%X{TraceId}] %c - %m%n${sys:LOG_EXCEPTION_CONVERSION_WORD}</Property>
+		<Property name="JSON_LOG_PATTERN">%m%n</Property>
+		<Property name="CONSOLE_LOG_PATTERN">%clr{%d{${sys:LOG_DATEFORMAT_PATTERN}}}{faint} %clr{${sys:LOG_LEVEL_PATTERN}} %clr{%pid}{magenta} %clr{---}{faint} %clr{[%15.15t]}{faint} %clr{[%X{TraceId}]}{yellow} %clr{%-40.40c{1.}}{cyan} %clr{:}{faint} %m%n${sys:LOG_EXCEPTION_CONVERSION_WORD}</Property>
+		<Property name="ERROR_LOG_PATTERN">%d{${LOG_DATEFORMAT_PATTERN}} ${LOG_LEVEL_PATTERN} %pid --- [%t] [%X{TraceId}] %-40.40c{1.} : %m%n${sys:LOG_EXCEPTION_CONVERSION_WORD}</Property>
+		<Property name="LOG_DIR">logs</Property>
+	</Properties>
+
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT" follow="true">
+			<PatternLayout pattern="${sys:CONSOLE_LOG_PATTERN}"/>
+		</Console>
+
+		<RollingRandomAccessFile name="webappLog" fileName="${LOG_DIR}/webapp.log" filePattern="${LOG_DIR}/webapp-%d{yyyy-MM-dd}-%03i.log">
+			<PatternLayout pattern="${PATTERN}"/>
+			<SizeBasedTriggeringPolicy size="200 MB"/>
+			<DefaultRolloverStrategy max="100"/>
+		</RollingRandomAccessFile>
+
+		<RollingRandomAccessFile name="requestLog" fileName="${LOG_DIR}/request.json" filePattern="${LOG_DIR}/request-%d{yyyy-MM-dd}-%03i.json">
+			<PatternLayout pattern="${JSON_LOG_PATTERN}"/>
+			<SizeBasedTriggeringPolicy size="200 MB"/>
+			<DefaultRolloverStrategy max="100"/>
+		</RollingRandomAccessFile>
+
+	</Appenders>
+
+	<!-- Logger -->
+	<Loggers>
+		<Root level="info">
+			<AppenderRef ref="webappLog"/>
+			<AppenderRef ref="Console"/>
+		</Root>
+
+		<Logger name="com.youyu" level="debug" additivity="false">
+			<AppenderRef ref="webappLog" level="info"/>
+			<AppenderRef ref="Console"/>
+		</Logger>
+
+		<Logger name="com.youyu.framework.logging.rest" level="info" additivity="false">
+			<AppenderRef ref="requestLog"/>
+			<AppenderRef ref="Console"/>
+		</Logger>
+
+		<Logger name="com.alibaba.nacos.client.config" level="warn" additivity="false">
+			<AppenderRef ref="webappLog"/>
+		</Logger>
+	</Loggers>
+
+</Configuration>

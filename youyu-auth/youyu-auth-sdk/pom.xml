@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.youyu</groupId>
+		<artifactId>youyu-auth</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>youyu-auth-sdk</artifactId>
+	<packaging>jar</packaging>
+	<name>youyu-auth-sdk</name>
+	<description>youyu-auth SDK - Convenient Client</description>
+
+	<dependencies>
+		<!-- Auth Service API -->
+		<dependency>
+			<groupId>com.youyu</groupId>
+			<artifactId>youyu-auth-api</artifactId>
+		</dependency>
+		
+		<!-- Spring Boot Starter (for Redis support) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+			<optional>true</optional>
+		</dependency>
+		
+		<!-- Spring Cloud OpenFeign -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
+		
+		<!-- Base (for UserInfo, RequestContextUtil, etc.) -->
+		<dependency>
+			<groupId>com.youyu</groupId>
+			<artifactId>youyu-framework</artifactId>
+		</dependency>
+		
+		<!-- Common (for Result, BusinessException, etc.) -->
+		<dependency>
+			<groupId>com.youyu</groupId>
+			<artifactId>youyu-common</artifactId>
+		</dependency>
+		
+		<!-- Spring AOP -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aspectj</artifactId>
+		</dependency>
+		
+		<!-- Lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+		
+		<!-- Caffeine Cache -->
+		<dependency>
+			<groupId>com.github.ben-manes.caffeine</groupId>
+			<artifactId>caffeine</artifactId>
+		</dependency>
+	</dependencies>
+
+</project>

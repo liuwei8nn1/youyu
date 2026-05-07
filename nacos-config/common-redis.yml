@@ -1,0 +1,39 @@
+# ========================================
+# 公共 Redis 配置（Nacos）
+# ========================================
+# 
+# 使用说明：
+# 1. 此文件是 Nacos 配置中心的公共 Redis 配置
+# 2. 所有需要 Redis 的微服务都可以引用此配置
+# 3. Nacos 配置信息：
+#    - Data ID: common-redis.yaml
+#    - Group: DEFAULT_GROUP
+#    - Namespace: youyu-cloud
+#    - 配置格式: YAML
+#
+# 使用方式：在 application.yml 中导入
+#   spring:
+#     config:
+#       import:
+#         - "nacos:common-redis.yaml"
+# ========================================
+
+spring:
+  data:
+    redis:
+      host: ${REDIS_HOST:prod-redis-server}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:redis_secure_password}
+      database: 0
+      timeout: 5000ms               # 连接超时时间
+      
+      # ========================================
+      # Lettuce 连接池配置
+      # ========================================
+      lettuce:
+        pool:
+          max-active: 50            # 最大活跃连接数
+          max-idle: 20              # 最大空闲连接数
+          min-idle: 10              # 最小空闲连接数
+          max-wait: 3000ms          # 最大等待时间
+        shutdown-timeout: 100ms     # 关闭超时时间

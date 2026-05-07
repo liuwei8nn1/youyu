@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<modelVersion>4.0.0</modelVersion>
+<parent>
+<groupId>com.youyu</groupId>
+<artifactId>youyu-order</artifactId>
+<version>0.0.1-SNAPSHOT</version>
+</parent>
+<artifactId>youyu-order-impl</artifactId>
+<packaging>jar</packaging>
+<name>youyu-order-impl</name>
+<description>order-service Implementation - DDD Domain Logic</description>
+
+<dependencies>
+	<!-- Order Service API -->
+	<dependency>
+		<groupId>com.youyu</groupId>
+		<artifactId>youyu-order-api</artifactId>
+	</dependency>
+	
+	<!-- Seckill Service API (用于库存回滚消息DTO) -->
+	<dependency>
+		<groupId>com.youyu</groupId>
+		<artifactId>youyu-seckill-api</artifactId>
+	</dependency>
+	
+	<!-- Product Service API (用于Feign调用查询商品详情) -->
+	<dependency>
+		<groupId>com.youyu</groupId>
+		<artifactId>youyu-product-api</artifactId>
+	</dependency>
+	
+	<!-- YouYu User API (用于Feign调用查询收货地址) -->
+	<dependency>
+		<groupId>com.youyu</groupId>
+		<artifactId>youyu-user-api</artifactId>
+	</dependency>
+	
+	<!-- Spring Boot Web -->
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-web</artifactId>
+		<exclusions>
+			<!-- 排除默认的 Logback -->
+			<exclusion>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-logging</artifactId>
+			</exclusion>
+		</exclusions>
+	</dependency>
+	
+	<!-- MyBatis Plus -->
+	<dependency>
+		<groupId>com.baomidou</groupId>
+		<artifactId>mybatis-plus-spring-boot4-starter</artifactId>
+	</dependency>
+	
+	<!-- MySQL Driver -->
+	<dependency>
+		<groupId>com.mysql</groupId>
+		<artifactId>mysql-connector-j</artifactId>
+	</dependency>
+	
+	<!-- Common -->
+	<dependency>
+		<groupId>com.youyu</groupId>
+		<artifactId>youyu-common</artifactId>
+	</dependency>
+	
+	<!-- Base Starter (自动配置) -->
+	<dependency>
+		<groupId>com.youyu</groupId>
+		<artifactId>youyu-starter</artifactId>
+	</dependency>
+	
+	<!-- MapStruct -->
+	<dependency>
+		<groupId>org.mapstruct</groupId>
+		<artifactId>mapstruct</artifactId>
+	</dependency>
+	
+	<!-- Lombok -->
+	<dependency>
+		<groupId>org.projectlombok</groupId>
+		<artifactId>lombok</artifactId>
+		<optional>true</optional>
+	</dependency>
+	
+	<!-- RocketMQ -->
+	<dependency>
+		<groupId>org.apache.rocketmq</groupId>
+		<artifactId>rocketmq-spring-boot-starter</artifactId>
+	</dependency>
+</dependencies>
+
+<build>
+	<plugins>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<configuration>
+				<annotationProcessorPaths>
+					<path>
+						<groupId>org.projectlombok</groupId>
+						<artifactId>lombok</artifactId>
+						<version>${lombok.version}</version>
+					</path>
+					<path>
+						<groupId>org.mapstruct</groupId>
+						<artifactId>mapstruct-processor</artifactId>
+						<version>${mapstruct.version}</version>
+					</path>
+					<path>
+						<groupId>org.projectlombok</groupId>
+						<artifactId>lombok-mapstruct-binding</artifactId>
+						<version>0.2.0</version>
+					</path>
+				</annotationProcessorPaths>
+			</configuration>
+		</plugin>
+	</plugins>
+</build>
+</project>

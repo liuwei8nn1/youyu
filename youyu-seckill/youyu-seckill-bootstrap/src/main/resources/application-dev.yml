@@ -1,0 +1,94 @@
+# ========================================
+# 开发环境配置（纯本地，不依赖 Nacos）
+# ========================================
+# 
+# 说明：
+# 1. 此文件包含所有本地配置，默认禁用 Nacos
+# 2. 如果需要使用本地 Nacos，请取消下方注释并配置 Nacos 地址
+# 3. 所有业务配置都直接在此文件中管理
+
+server:
+  port: 9004
+
+spring:
+  web:
+    locale: en
+  # ========================================
+  # 清空 Nacos 配置导入（必须在最前面，避免触发连接）
+  # ========================================
+  config:
+    import: ""
+    # ========================================
+  # Nacos 配置（默认禁用）
+  # 如需使用本地 Nacos，请：
+  # 1. 将 enabled 改为 true
+  # 2. 配置 server-addr 为你的 Nacos 地址
+  # 3. 取消 config.import 的注释
+  # ========================================
+  cloud:
+    nacos:
+      config:
+        enabled: false
+        server-addr: ""
+        namespace: ""
+        group: ""
+      discovery:
+        enabled: false
+        server-addr: ""
+        namespace: ""
+        register-enabled: false
+  messages:
+    basename: base,messages
+    encoding: UTF-8
+    fallback-to-system-locale: false
+    use-code-as-default-message: true
+  # 数据源配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/youyu_db?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: Xyz123456
+  
+  # Redis 配置
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+      timeout: 3000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+
+# MyBatis-Plus 配置（开发环境开启 SQL 日志）
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*.xml
+  type-aliases-package: com.youyu.seckill.entity
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# RocketMQ 配置（开发环境），开启模拟模式
+rocketmq:
+  mock: true
+#  name-server: 127.0.0.1:9876
+#  producer:
+#    group: ${spring.application.name}-${spring.profiles.active}-producer
+  
+  # ========================================
+  # 生产者配置（按业务隔离）
+  # ========================================
+  seckill:
+    producer:
+      group: youyu-seckill-order-producer-group-dev
+    consumer:
+      group: youyu-seckill-order-consumer-group-dev
+
+# 日志配置（开发环境详细日志）
+logging:
+  level:
+    root: INFO
+    com.youyu.seckill: DEBUG
+    com.baomidou.mybatisplus: DEBUG

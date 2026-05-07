@@ -1,0 +1,30 @@
+# 基础自动配置（Nacos Sentinel）
+com.youyu.starter.autoconfigure.base.BaseAutoConfiguration
+# Web 层自动配置
+com.youyu.starter.autoconfigure.web.WebAutoConfiguration
+# IP 限流自动配置 (默认关闭,需手动启用)
+com.youyu.starter.autoconfigure.security.IpRateLimitAutoConfiguration
+# 数据层自动配置
+com.youyu.starter.autoconfigure.data.DataAutoConfiguration
+# ID 生成器自动配置
+com.youyu.starter.autoconfigure.id.IdGeneratorAutoConfiguration
+# 国际化自动配置
+com.youyu.starter.autoconfigure.i18n.I18nAutoConfiguration
+# 告警模块自动配置
+com.youyu.starter.autoconfigure.warn.WarnAutoConfiguration
+com.youyu.starter.autoconfigure.warn.WarnListenerConfiguration
+# 请求日志自动配置
+com.youyu.starter.autoconfigure.logging.RequestLoggingAutoConfiguration
+# Feign 链路追踪自动配置
+com.youyu.starter.autoconfigure.trace.FeignTraceConfig
+# RestTemplate 链路追踪自动配置
+com.youyu.starter.autoconfigure.trace.RestTemplateTraceConfig
+# 缓存同步自动配置
+com.youyu.starter.autoconfigure.cache.CacheSyncAutoConfiguration
+# 防抖自动配置
+com.youyu.starter.autoconfigure.antishake.AntiShakeAutoConfiguration
+# 缓存自动配置
+com.youyu.starter.autoconfigure.cache.CacheAutoConfiguration
+# MQ 补偿机制自动配置
+com.youyu.starter.autoconfigure.mq.RocketMQMockConfig
+com.youyu.starter.autoconfigure.mq.MqCompensationAutoConfiguration

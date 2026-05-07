@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.youyu</groupId>
+		<artifactId>youyu</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>youyu-seckill</artifactId>
+	<packaging>pom</packaging>
+	<name>youyu-seckill</name>
+	<description>seckill-service Parent POM</description>
+
+	<modules>
+		<module>youyu-seckill-api</module>
+		<module>youyu-seckill-impl</module>
+		<module>youyu-seckill-sdk</module>
+		<module>youyu-seckill-bootstrap</module>
+	</modules>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-seckill-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-seckill-impl</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-seckill-sdk</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-seckill-bootstrap</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+</project>

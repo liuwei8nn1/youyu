@@ -1,0 +1,83 @@
+# ========================================
+# 开发环境配置（纯本地，不依赖 Nacos）
+# ========================================
+# 
+# 说明：
+# 1. 此文件包含所有本地配置，默认禁用 Nacos
+# 2. 如果需要使用本地 Nacos，请取消下方注释并配置 Nacos 地址
+# 3. 所有业务配置都直接在此文件中管理
+
+server:
+  port: 9003
+cache:
+  sync:
+    enabled: true
+spring:
+  web:
+    locale: en
+  # ========================================
+  # 清空 Nacos 配置导入（必须在最前面，避免触发连接）
+  # ========================================
+  config:
+    import: ""
+  # ========================================
+  # Nacos 配置（默认禁用）
+  # 如需使用本地 Nacos，请：
+  # 1. 将 enabled 改为 true
+  # 2. 配置 server-addr 为你的 Nacos 地址
+  # 3. 取消 config.import 的注释
+  # ========================================
+  cloud:
+    nacos:
+      config:
+        enabled: false
+        server-addr: ""
+        namespace: ""
+        group: ""
+      discovery:
+        enabled: false
+        server-addr: ""
+        namespace: ""
+        register-enabled: false
+  
+  # 数据源配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/youyu_db?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: Xyz123456
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+      timeout: 3000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+
+# MyBatis-Plus 配置（开发环境开启 SQL 日志）
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*.xml
+  type-aliases-package: com.youyu.product.entity
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# RocketMQ 配置（开发环境）
+rocketmq:
+  enabled: false                                   # 禁用 RocketMQ，无需启动 MQ 服务
+  name-server: 127.0.0.1:9876
+
+service:
+  url:
+    auth-service: http://localhost:9001
+
+# 日志配置（开发环境详细日志）
+logging:
+  level:
+    root: INFO
+    com.youyu.product: DEBUG
+    com.baomidou.mybatisplus: DEBUG

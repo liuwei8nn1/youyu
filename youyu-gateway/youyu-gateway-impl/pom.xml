@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.youyu</groupId>
+		<artifactId>youyu-gateway</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>youyu-gateway-impl</artifactId>
+	<packaging>jar</packaging>
+	<name>youyu-gateway-impl</name>
+	<description>Gateway Service Implementation</description>
+	
+	<dependencies>
+		<dependency>
+			<groupId>com.youyu</groupId>
+			<artifactId>youyu-gateway-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.youyu</groupId>
+			<artifactId>youyu-auth-api</artifactId>
+		</dependency>
+		<!-- Spring Cloud Gateway -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-gateway-server-webflux</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis-reactive</artifactId>
+		</dependency>
+		
+		<!-- Spring Cloud Alibaba Nacos Discovery -->
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+			<exclusions>
+				<!-- 排除 log4j-to-slf4j，避免与 log4j-slf4j2-impl 冲突 -->
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-to-slf4j</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<!-- Spring Cloud Alibaba Nacos Config -->
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+			<exclusions>
+				<!-- 排除 log4j-to-slf4j，避免与 log4j-slf4j2-impl 冲突 -->
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-to-slf4j</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<!-- Spring Cloud Alibaba Sentinel (Gateway 专用) -->
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+			<exclusions>
+				<!-- 排除 Sentinel 自带的 Logback -->
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-alibaba-sentinel-gateway</artifactId>
+		</dependency>
+		<!-- Sentinel 规则持久化到 Nacos -->
+		<dependency>
+			<groupId>com.alibaba.csp</groupId>
+			<artifactId>sentinel-datasource-nacos</artifactId>
+		</dependency>
+		
+		<!-- Common -->
+		<dependency>
+			<groupId>com.youyu</groupId>
+			<artifactId>youyu-common</artifactId>
+			<exclusions>
+				<!-- 排除 Spring MVC，与 Gateway 不兼容 -->
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-web</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.baomidou</groupId>
+					<artifactId>mybatis-plus-spring-boot4-starter</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+			
+		<!-- Base -->
+		<dependency>
+			<groupId>com.youyu</groupId>
+			<artifactId>youyu-framework</artifactId>
+			<exclusions>
+				<!-- 排除 Spring MVC，与 Gateway 不兼容 -->
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-web</artifactId>
+				</exclusion>
+				<exclusion>
+					<artifactId>mybatis-plus-spring-boot4-starter</artifactId>
+					<groupId>com.baomidou</groupId>
+				</exclusion>
+				<!-- 排除 RocketMQ，网关不需要 MQ 功能 -->
+				<exclusion>
+					<groupId>org.apache.rocketmq</groupId>
+					<artifactId>rocketmq-spring-boot-starter</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<!-- Knife4j Gateway Aggregation (WebFlux) -->
+		<dependency>
+			<groupId>com.github.xiaoymin</groupId>
+			<artifactId>knife4j-gateway-spring-boot-starter</artifactId>
+		</dependency>
+		
+		<!-- Lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+	</dependencies>
+</project>

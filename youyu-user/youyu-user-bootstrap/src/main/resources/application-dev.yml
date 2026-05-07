@@ -1,0 +1,77 @@
+# ========================================
+# 开发环境配置（纯本地，不依赖 Nacos）
+# ========================================
+# 
+# 说明：
+# 1. 此文件包含所有本地配置，默认禁用 Nacos
+# 2. 如果需要使用本地 Nacos，请取消下方注释并配置 Nacos 地址
+# 3. 所有业务配置都直接在此文件中管理
+
+server:
+  port: 9005
+
+spring:
+  # ========================================
+  # 清空 Nacos 配置导入（必须在最前面，避免触发连接）
+  # ========================================
+  config:
+    import: ""
+
+  # ========================================
+  # 禁用 Nacos（覆盖 application.yml 中的默认启用）
+  # ========================================
+  cloud:
+    nacos:
+      config:
+        enabled: false
+        server-addr: ""
+        namespace: ""
+        group: ""
+      discovery:
+        enabled: false
+        server-addr: ""
+        namespace: ""
+        register-enabled: false
+
+  # 数据源配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/youyu_db?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: Xyz123456
+
+# MyBatis-Plus 配置（开发环境开启 SQL 日志）
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+service:
+  url:
+    youyu-auth: http://localhost:9001
+
+# 日志配置（开发环境详细日志）
+logging:
+  level:
+    root: INFO
+    com.youyu.auth: DEBUG
+    com.baomidou.mybatisplus: DEBUG
+
+# Knife4j 配置
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+
+# SpringDoc 配置
+#springdoc:
+#  api-docs:
+#    enabled: true
+#    path: /v3/api-docs
+#  swagger-ui:
+#    enabled: true
+#    path: /swagger-ui/index.html
+#  group-configs:
+#    - group: default
+#      paths-to-match: /**
+#      packages-to-scan: com.youyu.auth

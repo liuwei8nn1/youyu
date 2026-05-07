@@ -1,0 +1,26 @@
+# ========================================
+# 应用基础配置（生产环境默认配置）
+# ========================================
+spring:
+  cloud:
+    nacos:
+      config:
+        enabled: true
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+        namespace: ${NACOS_NAMESPACE:youyu-cloud}_${spring.profiles.active}
+        group: ${NACOS_GROUP:DEFAULT_GROUP}
+        file-extension: yaml
+        refresh-enabled: true
+      discovery:
+        enabled: true
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+        namespace: ${NACOS_NAMESPACE:youyu-cloud}_${spring.profiles.active}
+        register-enabled: true
+        heart-beat-interval: 5000
+        heart-beat-timeout: 15000
+  config:
+    import:
+      - "nacos:common-db.yaml"
+      - "nacos:common-redis.yaml"
+      - "nacos:common-sentinel.yaml"
+      - "nacos:${spring.application.name}.yaml"

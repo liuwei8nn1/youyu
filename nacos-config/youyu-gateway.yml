@@ -1,0 +1,108 @@
+# ========================================
+# Gateway 服务专属配置（Nacos）
+# ========================================
+# 
+# 使用说明：
+# 1. 此文件是 Nacos 配置中心的 gateway-service 专属配置
+# 2. Nacos 配置信息：
+#    - Data ID: gateway-service.yaml
+#    - Group: DEFAULT_GROUP
+#    - Namespace: youyu-cloud
+#    - 配置格式: YAML
+#
+# 使用方式：在 application.yml 中导入
+#   spring:
+#     config:
+#       import:
+#         - "nacos:gateway-service.yaml"
+# ========================================
+
+# ========================================
+# Gateway 路由配置
+# ========================================
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            # 认证服务 - 公开接口(登录、刷新Token)
+            - id: auth-public
+              uri: lb://auth-service
+              predicates:
+                - Path=/api/auth/login,/api/auth/refresh
+              filters:
+                - StripPrefix=1
+
+            # 认证服务 - 需要认证的接口(登出、设备管理)
+            - id: auth-protected
+              uri: lb://auth-service
+              predicates:
+                - Path=/api/auth/logout,/api/auth/logout-all,/api/auth/sessions,/api/auth/session/kick
+              filters:
+                - name: PermissionFilter
+                  args:
+                    requiredUserType: LOGIN
+                - StripPrefix=1
+
+            - id: order-service
+              uri: lb://order-service
+              predicates:
+                - Path=/api/order/**
+              filters:
+                - name: PermissionFilter
+                  args:
+                    requiredUserType: LOGIN
+                - StripPrefix=1
+
+            # 商品服务 - 需要 JWT 验证（所有登录用户）
+            - id: product-service
+              uri: lb://product-service
+              predicates:
+                - Path=/api/product/**
+              filters:
+                - name: PermissionFilter
+                  args:
+                    requiredUserType: LOGIN
+                - StripPrefix=2
+
+            - id: seckill-service
+              uri: lb://seckill-service
+              predicates:
+                - Path=/api/seckill/**
+              filters:
+                - name: PermissionFilter
+                  args:
+                    requiredUserType: LOGIN
+                - StripPrefix=2
+
+            - id: user-service
+              uri: lb://user-service
+              predicates:
+                - Path=/api/user/**
+              filters:
+                - name: PermissionFilter
+                  args:
+                    requiredUserType: LOGIN
+                - StripPrefix=2
+
+            # 后台管理 - 需要管理员权限
+            - id: admin-service
+              uri: lb://admin-service
+              predicates:
+                - Path=/api/admin/**
+              filters:
+                - name: PermissionFilter
+                  args:
+                    requiredUserType: ADMIN
+                - StripPrefix=2
+
+# ========================================
+# API 签名验证配置（UAT/PROD 环境建议开启）
+# ========================================
+api-sign:
+  enabled: true
+  secrets:
+    web-app: ${WEB_APP_SECRET:web-secret-key}
+    ios-app: ${IOS_APP_SECRET:ios-secret-key}
+  time-window: 60

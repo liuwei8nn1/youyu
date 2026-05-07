@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.youyu</groupId>
+	<artifactId>youyu</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>youyu</name>
+	<modules>
+		<!-- 基础设施层 -->
+		<module>youyu-common</module>
+		<module>youyu-framework</module>
+		<module>youyu-starter</module>
+		
+		<!-- 公共服务层 -->
+		<module>youyu-basics</module>
+		
+		<!-- 网关服务 -->
+		<module>youyu-gateway</module>
+		
+		<!-- 业务服务层 -->
+		<module>youyu-auth</module>
+		<module>youyu-user</module>
+		<module>youyu-product</module>
+		<module>youyu-seckill</module>
+		<module>youyu-order</module>
+	</modules>
+	<packaging>pom</packaging>
+	<properties>
+		<java.version>25</java.version>
+		<maven.compiler.source>25</maven.compiler.source>
+		<maven.compiler.target>25</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<spring-boot.version>4.0.5</spring-boot.version>
+		<spring-cloud.version>2025.1.0</spring-cloud.version>
+		<spring-cloud-alibaba.version>2025.1.0.0</spring-cloud-alibaba.version>
+		<lombok.version>1.18.42</lombok.version>
+		<mybatis-plus.version>3.5.15</mybatis-plus.version>
+		<redisson.version>4.3.1</redisson.version>
+		<mapstruct.version>1.6.3</mapstruct.version>
+		<fastjson2.version>2.0.58</fastjson2.version>
+		<commons-io.version>2.21.0</commons-io.version>
+		<rocketmq-starter.version>2.3.0</rocketmq-starter.version>
+		<log4j2.version>2.25.3</log4j2.version>
+		<jjwt.verrsion>0.12.5</jjwt.verrsion>
+		<!-- User Service Versions -->
+		<user-api.version>0.0.1-SNAPSHOT</user-api.version>
+		<user-sdk.version>0.0.1-SNAPSHOT</user-sdk.version>
+		<!-- Auth Service Versions -->
+		<auth-api.version>0.0.1-SNAPSHOT</auth-api.version>
+		<auth-sdk.version>0.0.1-SNAPSHOT</auth-sdk.version>
+		<!-- Product Service Versions -->
+		<product-api.version>0.0.1-SNAPSHOT</product-api.version>
+		<product-sdk.version>0.0.1-SNAPSHOT</product-sdk.version>
+		<!-- Order Service Versions -->
+		<order-api.version>0.0.1-SNAPSHOT</order-api.version>
+		<order-sdk.version>0.0.1-SNAPSHOT</order-sdk.version>
+		<!-- Seckill Service Versions -->
+		<seckill-api.version>0.0.1-SNAPSHOT</seckill-api.version>
+		<seckill-sdk.version>0.0.1-SNAPSHOT</seckill-sdk.version>
+		<!-- Gateway Service Versions -->
+		<gateway-sdk.version>0.0.1-SNAPSHOT</gateway-sdk.version>
+		<!-- Basics Service Versions -->
+		<basics-api.version>0.0.1-SNAPSHOT</basics-api.version>
+		<basics-sdk.version>0.0.1-SNAPSHOT</basics-sdk.version>
+		<knife4j.version>4.4.0</knife4j.version>
+		<springdoc-openapi.version>3.0.3</springdoc-openapi.version>
+	</properties>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-framework</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<!-- Base Starter -->
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-starter</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<!-- YouYu User API -->
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-user-api</artifactId>
+				<version>${user-api.version}</version>
+			</dependency>
+			<!-- User Service SDK -->
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-user-sdk</artifactId>
+				<version>${user-sdk.version}</version>
+			</dependency>
+			<!-- Auth Service API -->
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-auth-api</artifactId>
+				<version>${auth-api.version}</version>
+			</dependency>
+			<!-- Auth Service SDK -->
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-auth-sdk</artifactId>
+				<version>${auth-sdk.version}</version>
+			</dependency>
+			<!-- Product Service API -->
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-product-api</artifactId>
+				<version>${product-api.version}</version>
+			</dependency>
+			<!-- Product Service SDK -->
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-product-sdk</artifactId>
+				<version>${product-sdk.version}</version>
+			</dependency>
+			<!-- Order Service API -->
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-order-api</artifactId>
+				<version>${order-api.version}</version>
+			</dependency>
+			<!-- Order Service SDK -->
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-order-sdk</artifactId>
+				<version>${order-sdk.version}</version>
+			</dependency>
+			<!-- Seckill Service API -->
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-seckill-api</artifactId>
+				<version>${seckill-api.version}</version>
+			</dependency>
+			<!-- Seckill Service SDK -->
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-seckill-sdk</artifactId>
+				<version>${seckill-sdk.version}</version>
+			</dependency>
+			<!-- Gateway Service SDK -->
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-gateway-sdk</artifactId>
+				<version>${gateway-sdk.version}</version>
+			</dependency>
+			<!-- Basics Service API -->
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-basics-api</artifactId>
+				<version>${basics-api.version}</version>
+			</dependency>
+			<!-- Basics Service SDK -->
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-basics-sdk</artifactId>
+				<version>${basics-sdk.version}</version>
+			</dependency>
+			<!-- Spring Boot 依赖管理 -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>${spring-boot.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<!-- Spring Cloud 依赖管理 -->
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<!-- Spring Cloud Alibaba 依赖管理 -->
+			<dependency>
+				<groupId>com.alibaba.cloud</groupId>
+				<artifactId>spring-cloud-alibaba-dependencies</artifactId>
+				<version>${spring-cloud-alibaba.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.baomidou</groupId>
+				<artifactId>mybatis-plus-spring-boot4-starter</artifactId>
+				<version>${mybatis-plus.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.baomidou</groupId>
+				<artifactId>mybatis-plus-extension</artifactId>
+				<version>${mybatis-plus.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.baomidou</groupId>
+				<artifactId>mybatis-plus-jsqlparser</artifactId>
+				<version>${mybatis-plus.version}</version>
+			</dependency>
+			<!-- Redisson -->
+			<dependency>
+				<groupId>org.redisson</groupId>
+				<artifactId>redisson-spring-boot-starter</artifactId>
+				<version>${redisson.version}</version>
+			</dependency>
+			<!-- MapStruct -->
+			<dependency>
+				<groupId>org.mapstruct</groupId>
+				<artifactId>mapstruct</artifactId>
+				<version>${mapstruct.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.alibaba.fastjson2</groupId>
+				<artifactId>fastjson2</artifactId>
+				<version>${fastjson2.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>${commons-io.version}</version>
+			</dependency>
+			<!-- Lombok -->
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>${lombok.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.rocketmq</groupId>
+				<artifactId>rocketmq-spring-boot-starter</artifactId>
+				<version>${rocketmq-starter.version}</version>
+			</dependency>
+			<!-- JWT Library -->
+			<dependency>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt-api</artifactId>
+				<version>${jjwt.verrsion}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt-impl</artifactId>
+				<version>${jjwt.verrsion}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt-jackson</artifactId>
+				<version>${jjwt.verrsion}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.github.xiaoymin</groupId>
+				<artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+				<version>${knife4j.version}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+						<groupId>org.springdoc</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.springdoc</groupId>
+				<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+				<version>${springdoc-openapi.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.github.xiaoymin</groupId>
+				<artifactId>knife4j-gateway-spring-boot-starter</artifactId>
+				<version>${knife4j.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${spring-boot.version}</version>
+			</plugin>
+			<!-- Maven 编译器插件 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.14.1</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${lombok.version}</version>
+						</path>
+						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>${mapstruct.version}</version>
+						</path>
+						<!-- Lombok 和 MapStruct 绑定 -->
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok-mapstruct-binding</artifactId>
+							<version>0.2.0</version>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+				<executions>
+					<execution>
+						<id>log4j-plugin-processor</id>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<phase>process-classes</phase>
+						<configuration>
+							<proc>only</proc>
+							<annotationProcessorPaths>
+								<path>
+									<groupId>org.apache.logging.log4j</groupId>
+									<artifactId>log4j-core</artifactId>
+									<version>${log4j2.version}</version>
+								</path>
+							</annotationProcessorPaths>
+							<annotationProcessors>
+								<annotationProcessor>
+									org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor
+								</annotationProcessor>
+							</annotationProcessors>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

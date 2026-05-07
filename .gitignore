@@ -1,0 +1,22 @@
+# 默认忽略的文件
+/shelf/
+/workspace.xml
+# 已忽略包含查询文件的默认文件夹
+/queries/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+# 基于编辑器的 HTTP 客户端请求
+/httpRequests/
+/.idea/
+*/target/
+/logs/
+/logs/webapp.log
+**/target/
+requests.json
+**/changelists.json
+.vscode/changelists.json
+/.vscode/settings.json
+/youyu-web/youyu-admin/node_modules
+youyu-gateway/youyu-gateway-bootstrap/logs/request.json
+youyu-gateway/youyu-gateway-bootstrap/logs/webapp.log

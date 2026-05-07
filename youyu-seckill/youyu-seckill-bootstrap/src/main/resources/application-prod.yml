@@ -1,0 +1,15 @@
+# ========================================
+# 生产环境配置
+# ========================================
+# 
+# 说明：
+# 1. 此文件仅包含 Nacos 连接配置，所有业务配置都在 Nacos 配置中心管理
+# 2. Nacos 配置信息：
+#    - Data ID: seckill-service.yml（应用专属配置）
+#    - Group: DEFAULT_GROUP
+#    - Namespace: youyu-cloud
+# 3. 公共配置示例请参考 resources/nacos-examples/ 目录
+#
+# 配置优先级：Nacos 配置 > application-prod.yml > application.yml
+# ========================================
+

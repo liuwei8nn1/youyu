@@ -1,0 +1,60 @@
+# ========================================
+# Sentinel 公共配置
+# ========================================
+sentinel:
+  transport:
+    # Sentinel Dashboard 地址
+    dashboard: ${SENTINEL_DASHBOARD:127.0.0.1:8080}
+    # 客户端监控 API 的端口 (每个应用需要不同,建议在应用专属配置中覆盖)
+    port: ${SENTINEL_CLIENT_PORT:8719}
+  
+  # 日志目录
+  log:
+    dir: ${user.home}/logs/csp/${spring.application.name}
+  
+  # 数据源配置 (从 Nacos 读取规则)
+  datasource:
+    # 流控规则
+    flow:
+      nacos:
+        server-addr: ${spring.cloud.nacos.config.server-addr}
+        data-id: ${spring.application.name}-flow-rules
+        group-id: ${spring.cloud.nacos.config.group}
+        rule-type: flow
+        data-type: json
+    
+    # 降级规则
+    degrade:
+      nacos:
+        server-addr: ${spring.cloud.nacos.config.server-addr}
+        data-id: ${spring.application.name}-degrade-rules
+        group-id: ${spring.cloud.nacos.config.group}
+        rule-type: degrade
+        data-type: json
+    
+    # 系统级限流规则 (保护整个应用)
+    system:
+      nacos:
+        server-addr: ${spring.cloud.nacos.config.server-addr}
+        data-id: ${spring.application.name}-system-rules
+        group-id: ${spring.cloud.nacos.config.group}
+        rule-type: system
+        data-type: json
+    
+    # 热点参数限流规则 (用于按IP/用户ID等维度限流)
+    param-flow:
+      nacos:
+        server-addr: ${spring.cloud.nacos.config.server-addr}
+        data-id: ${spring.application.name}-param-flow-rules
+        group-id: ${spring.cloud.nacos.config.group}
+        rule-type: param-flow
+        data-type: json
+    
+    # 授权规则
+    authority:
+      nacos:
+        server-addr: ${spring.cloud.nacos.config.server-addr}
+        data-id: ${spring.application.name}-authority-rules
+        group-id: ${spring.cloud.nacos.config.group}
+        rule-type: authority
+        data-type: json

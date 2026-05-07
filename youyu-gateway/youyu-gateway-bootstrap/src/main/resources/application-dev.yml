@@ -1,0 +1,160 @@
+# ========================================
+# 开发环境配置（纯本地，不依赖 Nacos）
+# ========================================
+# 
+# 说明：
+# 1. 此文件覆盖 application.yml 中的生产默认配置
+# 2. 禁用 Nacos，使用本地数据库和 Redis
+# 3. 所有业务配置都直接在此文件中管理
+
+server:
+  port: 9000
+spring:
+  # ========================================
+  # 清空 Nacos 配置导入（必须在最前面，避免触发连接）
+  # ========================================
+  config:
+    import: ""
+
+  # ========================================
+  # 禁用 Nacos（覆盖 application.yml 中的默认启用）
+  # ========================================
+  cloud:
+    nacos:
+      config:
+        enabled: false
+        server-addr: ""
+        namespace: ""
+        group: ""
+      discovery:
+        enabled: false
+        server-addr: ""
+        namespace: ""
+        register-enabled: false
+    sentinel:
+      transport:
+        # Sentinel Dashboard 地址
+        dashboard: ${SENTINEL_DASHBOARD:localhost:8080}
+        # 客户端监控 API 的端口 (每个应用需要不同,建议在应用专属配置中覆盖)
+        port: ${SENTINEL_CLIENT_PORT:8719}
+      # 本地文件数据源（开发环境，不依赖 Nacos）
+      datasource:
+        gw-flow:
+          file:
+            rule-type: gw-flow
+            file: classpath:sentinel-default-rules/gateway-flow-rules.json
+        system:
+          file:
+            rule-type: system
+            file: classpath:sentinel-default-rules/gateway-system-rules.json
+        param-flow:
+          file:
+            rule-type: param-flow
+            file: classpath:sentinel-default-rules/gateway-param-flow-rules.json
+    # Gateway 路由配置（开发环境直接在本地配置）
+    gateway:
+      server:
+        webflux:
+          routes:
+            # 认证服务 - 公开接口
+            - id: auth-public
+              uri: http://localhost:9001
+              predicates:
+                - Path=/api/auth/sso/**,/api/auth/role-permission/**
+              filters:
+                - StripPrefix=2
+
+            # 认证服务 - 需要认证的接口
+            - id: auth-protected
+              uri: http://localhost:9001
+              predicates:
+                - Path=/api/auth/**
+              filters:
+                - name: PermissionFilter
+                  args:
+                    requiredUserType: LOGIN
+                - StripPrefix=2
+
+            - id: order-service
+              uri: http://localhost:9002
+              predicates:
+                - Path=/api/order/**
+              filters:
+                - name: PermissionFilter
+                  args:
+                    requiredUserType: LOGIN
+                - StripPrefix=1
+
+            # 商品服务 - 需要 JWT 验证（所有登录用户）
+            - id: product-service
+              uri: http://localhost:9003
+              predicates:
+                - Path=/api/product/**
+              filters:
+                - name: PermissionFilter
+                  args:
+                    requiredUserType: LOGIN
+                - StripPrefix=2
+
+            - id: seckill-service
+              uri: http://localhost:9004
+              predicates:
+                - Path=/api/seckill/**
+              filters:
+                - name: PermissionFilter
+                  args:
+                    requiredUserType: LOGIN
+                - StripPrefix=2
+
+            - id: user-service
+              uri: http://localhost:9005
+              predicates:
+                - Path=/api/user/**
+              filters:
+                - name: PermissionFilter
+                  args:
+                    requiredUserType: LOGIN
+                - StripPrefix=2
+
+            # 后台管理 - 需要管理员权限
+            - id: admin-service
+              uri: http://localhost:9900
+              predicates:
+                - Path=/api/admin/**
+              filters:
+                - name: PermissionFilter
+                  args:
+                    requiredUserType: ADMIN
+                - StripPrefix=2
+  
+  # Redis 配置（Gateway 需要 Redis 存储 JWT 黑名单等）
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+      timeout: 3000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+
+# JWT 配置
+jwt:
+  secret: ${JWT_SECRET:this-is-a-secure-jwt-secret-key-for-testing-purpose}
+
+# API 签名验证配置（开发环境默认关闭）
+api-sign:
+  enabled: false
+  secrets:
+    web-app: dev-secret-key
+  time-window: 60
+
+# 日志配置（开发环境详细日志）
+logging:
+  level:
+    root: INFO
+    com.youyu.gateway: DEBUG
+    org.springframework.cloud.gateway: DEBUG

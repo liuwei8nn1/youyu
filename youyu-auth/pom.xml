@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.youyu</groupId>
+		<artifactId>youyu</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>youyu-auth</artifactId>
+	<packaging>pom</packaging>
+	<name>auth-service</name>
+	<description>auth-service Parent POM</description>
+
+	<modules>
+		<module>youyu-auth-api</module>
+		<module>youyu-auth-impl</module>
+		<module>youyu-auth-sdk</module>
+		<module>youyu-auth-bootstrap</module>
+	</modules>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-auth-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-auth-impl</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-auth-sdk</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-auth-bootstrap</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+</project>

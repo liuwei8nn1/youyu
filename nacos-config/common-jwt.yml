@@ -1,0 +1,5 @@
+# JWT 配置
+jwt:
+  secret: ${JWT_SECRET:your-secret-key-change-in-production}
+  access-token-ttl: ${JWT_ACCESS_TOKEN_TTL:900}        # 15分钟（秒）
+  refresh-token-ttl: ${JWT_REFRESH_TOKEN_TTL:864000}   # 10天（秒）

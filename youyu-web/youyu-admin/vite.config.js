@@ -1,0 +1,22 @@
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import path from 'path'
+
+export default defineConfig({
+  plugins: [vue()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src')
+    }
+  },
+  server: {
+    port: 3000,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:9000',
+        changeOrigin: true
+        // 注意：不需要 rewrite，因为网关已经配置了 StripPrefix
+      }
+    }
+  }
+})

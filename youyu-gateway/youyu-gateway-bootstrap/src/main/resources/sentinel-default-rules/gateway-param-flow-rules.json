@@ -1,0 +1,26 @@
+[
+  {
+    "resource": "global_ip_limit",
+    "grade": 1,
+    "count": 50,
+    "paramIdx": 0,
+    "limitApp": "default",
+    "controlBehavior": 0,
+    "burstCount": 0,
+    "durationInSec": 1,
+    "paramFlowItemList": [],
+    "clusterMode": false
+  },
+  {
+    "resource": "user_rate_limit",
+    "grade": 1,
+    "count": 5,
+    "paramIdx": 0,
+    "limitApp": "default",
+    "controlBehavior": 0,
+    "burstCount": 0,
+    "durationInSec": 1,
+    "paramFlowItemList": [],
+    "clusterMode": false
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "resource": "order-service",
+    "resourceMode": 0,
+    "grade": 1,
+    "count": 1000,
+    "intervalSec": 1,
+    "controlBehavior": 0,
+    "burst": 0,
+    "maxQueueingTimeoutMs": 0,
+    "paramItem": null
+  },
+  {
+    "resource": "seckill-service",
+    "resourceMode": 0,
+    "grade": 1,
+    "count": 500,
+    "intervalSec": 1,
+    "controlBehavior": 0,
+    "burst": 0,
+    "maxQueueingTimeoutMs": 0,
+    "paramItem": null
+  },
+  {
+    "resource": "order-service",
+    "resourceMode": 0,
+    "grade": 1,
+    "count": 50,
+    "intervalSec": 1,
+    "controlBehavior": 0,
+    "burst": 0,
+    "maxQueueingTimeoutMs": 0,
+    "paramItem": {
+      "parseStrategy": 0,
+      "fieldName": null,
+      "pattern": null,
+      "matchStrategy": 0
+    }
+  },
+  {
+    "resource": "auth-public",
+    "resourceMode": 0,
+    "grade": 1,
+    "count": 5,
+    "intervalSec": 1,
+    "controlBehavior": 0,
+    "burst": 0,
+    "maxQueueingTimeoutMs": 0,
+    "paramItem": {
+      "parseStrategy": 0,
+      "fieldName": null,
+      "pattern": null,
+      "matchStrategy": 0
+    }
+  }
+]
