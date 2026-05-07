@@ -71,18 +71,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!-- RocketMQ -->
-		<dependency>
-			<groupId>org.apache.rocketmq</groupId>
-			<artifactId>rocketmq-spring-boot-starter</artifactId>
-			<exclusions>
-				<!-- 排除 RocketMQ 自带的 Logback -->
-				<exclusion>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter-logging</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
 		<!-- SpringDoc OpenAPI + Knife4j UI (仅微服务使用) -->
 		<dependency>
 			<groupId>com.github.xiaoymin</groupId>

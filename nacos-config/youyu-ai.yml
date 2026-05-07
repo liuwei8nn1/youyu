@@ -1,0 +1,35 @@
+# ========================================
+# AI 服务专属配置
+# ========================================
+
+# AI 提供商配置
+ai:
+  provider: dashscope  # dashscope(通义千问) 或 openai
+
+# Spring AI - 阿里云通义千问配置
+spring:
+  ai:
+    dashscope:
+      api-key: ${DASHSCOPE_API_KEY}
+      chat:
+        options:
+          model: qwen-plus  # 可选: qwen-turbo, qwen-plus, qwen-max
+          temperature: 0.7   # 创造性程度 0-1，越高越有创意
+
+# 日志配置
+logging:
+  level:
+    com.youyu.ai: INFO
+    org.springframework.ai: INFO
+
+# Sentinel 流控规则（可选）
+# spring:
+#   cloud:
+#     sentinel:
+#       datasource:
+#         flow:
+#           nacos:
+#             server-addr: ${spring.cloud.nacos.config.server-addr}
+#             data-id: ${spring.application.name}-flow-rules
+#             group-id: ${spring.cloud.nacos.config.group}
+#             rule-type: flow

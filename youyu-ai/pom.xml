@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.youyu</groupId>
+        <artifactId>youyu</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>youyu-ai</artifactId>
+    <packaging>pom</packaging>
+    <name>youyu-ai</name>
+    <description>YouYu AI Service - AI能力微服务</description>
+
+    <modules>
+        <module>youyu-ai-api</module>
+        <module>youyu-ai-impl</module>
+        <module>youyu-ai-bootstrap</module>
+        <module>youyu-ai-sdk</module>
+    </modules>
+
+    <properties>
+        <ai-api.version>0.0.1-SNAPSHOT</ai-api.version>
+        <ai-sdk.version>0.0.1-SNAPSHOT</ai-sdk.version>
+    </properties>
+</project>

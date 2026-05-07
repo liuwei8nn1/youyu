@@ -24,6 +24,7 @@
 		<module>youyu-product</module>
 		<module>youyu-seckill</module>
 		<module>youyu-order</module>
+		<module>youyu-ai</module>
 	</modules>
 	<packaging>pom</packaging>
 	<properties>
@@ -65,6 +66,14 @@
 		<basics-sdk.version>0.0.1-SNAPSHOT</basics-sdk.version>
 		<knife4j.version>4.4.0</knife4j.version>
 		<springdoc-openapi.version>3.0.3</springdoc-openapi.version>
+		<!-- Spring AI 版本 - 最新稳定版 -->
+		<spring-ai.version>1.1.5</spring-ai.version>
+		<spring-ai-alibaba.version>1.1.2.0</spring-ai-alibaba.version>
+		<!-- AI Service Versions -->
+		<ai-api.version>0.0.1-SNAPSHOT</ai-api.version>
+		<ai-impl.version>0.0.1-SNAPSHOT</ai-impl.version>
+		<ai-bootstrap.version>0.0.1-SNAPSHOT</ai-bootstrap.version>
+		<ai-sdk.version>0.0.1-SNAPSHOT</ai-sdk.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -161,6 +170,30 @@
 				<groupId>com.youyu</groupId>
 				<artifactId>youyu-basics-sdk</artifactId>
 				<version>${basics-sdk.version}</version>
+			</dependency>
+			<!-- AI Service API -->
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-ai-api</artifactId>
+				<version>${ai-api.version}</version>
+			</dependency>
+			<!-- AI Service Implementation -->
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-ai-impl</artifactId>
+				<version>${ai-impl.version}</version>
+			</dependency>
+			<!-- AI Service Bootstrap -->
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-ai-bootstrap</artifactId>
+				<version>${ai-bootstrap.version}</version>
+			</dependency>
+			<!-- AI Service SDK -->
+			<dependency>
+				<groupId>com.youyu</groupId>
+				<artifactId>youyu-ai-sdk</artifactId>
+				<version>${ai-sdk.version}</version>
 			</dependency>
 			<!-- Spring Boot 依赖管理 -->
 			<dependency>
@@ -273,6 +306,14 @@
 				<artifactId>knife4j-gateway-spring-boot-starter</artifactId>
 				<version>${knife4j.version}</version>
 			</dependency>
+			<!-- Spring AI BOM - 统一管理所有 Spring AI 模块版本 -->
+			<dependency>
+				<groupId>org.springframework.ai</groupId>
+				<artifactId>spring-ai-bom</artifactId>
+				<version>${spring-ai.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -337,5 +378,25 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<!-- Spring AI Maven 仓库配置 -->
+	<repositories>
+		<repository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>https://repo.spring.io/snapshot</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</repository>
+	</repositories>
 
 </project>

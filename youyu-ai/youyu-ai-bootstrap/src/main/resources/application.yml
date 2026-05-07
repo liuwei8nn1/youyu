@@ -1,0 +1,44 @@
+# ========================================
+# AI 服务基础配置
+# ========================================
+spring:
+  application:
+    name: ai-service
+  # 默认激活 dev 环境
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      config:
+        enabled: true
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+        namespace: ${NACOS_NAMESPACE:youyu-cloud}_${spring.profiles.active}
+        group: ${NACOS_GROUP:DEFAULT_GROUP}
+        file-extension: yaml
+        refresh-enabled: true
+      discovery:
+        enabled: true
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+        namespace: ${NACOS_NAMESPACE:youyu-cloud}_${spring.profiles.active}
+        register-enabled: true
+        heart-beat-interval: 5000
+        heart-beat-timeout: 15000
+  config:
+    import:
+      - "nacos:common-db.yaml"
+      - "nacos:common-redis.yaml"
+      - "nacos:common-sentinel.yaml"
+      - "nacos:${spring.application.name}.yaml"
+
+server:
+  port: 9010
+  # 启用虚拟线程（JDK 21+）
+  tomcat:
+    threads:
+      virtual: true
+
+# Knife4j 配置
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
