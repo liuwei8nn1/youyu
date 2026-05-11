@@ -1,10 +1,11 @@
 import request from '@/utils/request'
+import type { Role } from '@/types'
 
 /**
  * 获取所有角色
  */
 export function getRoleList() {
-  return request({
+  return request<Role[]>({
     url: '/auth/role-permission/roles',
     method: 'get'
   })
@@ -13,8 +14,8 @@ export function getRoleList() {
 /**
  * 获取角色详情
  */
-export function getRole(id) {
-  return request({
+export function getRole(id: number) {
+  return request<Role>({
     url: `/auth/role-permission/roles/${id}`,
     method: 'get'
   })
@@ -23,8 +24,8 @@ export function getRole(id) {
 /**
  * 创建角色
  */
-export function createRole(data) {
-  return request({
+export function createRole(data: Partial<Role>) {
+  return request<void>({
     url: '/auth/role-permission/createRole',
     method: 'post',
     data
@@ -34,8 +35,8 @@ export function createRole(data) {
 /**
  * 更新角色
  */
-export function updateRole(id, data) {
-  return request({
+export function updateRole(id: number, data: Partial<Role>) {
+  return request<void>({
     url: `/auth/role-permission/updateRole`,
     method: 'post',
     data: { ...data, roleId: id }
@@ -45,8 +46,8 @@ export function updateRole(id, data) {
 /**
  * 删除角色
  */
-export function deleteRole(id) {
-  return request({
+export function deleteRole(id: number) {
+  return request<void>({
     url: `/auth/role-permission/deleteRole?roleId=${id}`,
     method: 'post'
   })
@@ -55,8 +56,8 @@ export function deleteRole(id) {
 /**
  * 获取角色的菜单ID列表
  */
-export function getRoleMenus(roleId) {
-  return request({
+export function getRoleMenus(roleId: number) {
+  return request<number[]>({
     url: `/auth/role-permission/getRoleMenus?roleId=${roleId}`,
     method: 'get'
   })
@@ -65,8 +66,8 @@ export function getRoleMenus(roleId) {
 /**
  * 给角色分配菜单
  */
-export function assignRoleMenus(roleId, menuIds) {
-  return request({
+export function assignRoleMenus(roleId: number, menuIds: number[]) {
+  return request<void>({
     url: '/auth/role-permission/assignMenus',
     method: 'post',
     data: { roleId, menuIds }

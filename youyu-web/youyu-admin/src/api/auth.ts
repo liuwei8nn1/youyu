@@ -1,13 +1,14 @@
 import request from '@/utils/request'
+import type { LoginRequest, LoginResponse, MenuItem } from '@/types'
 
 /**
  * 用户登录
  */
-export function login(data) {
-  return request({
+export function login(data: LoginRequest) {
+  return request<LoginResponse>({
     url: '/auth/sso/login',
     method: 'post',
-    data: new URLSearchParams(data),
+    data: new URLSearchParams(data as any),
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     }
@@ -17,7 +18,7 @@ export function login(data) {
 /**
  * 刷新 token
  */
-export function refreshToken(refreshToken) {
+export function refreshToken(refreshToken: string) {
   return request({
     url: '/auth/sso/refresh',
     method: 'post',
@@ -38,8 +39,8 @@ export function logout() {
 /**
  * 获取用户菜单
  */
-export function getUserMenus(userId) {
-  return request({
+export function getUserMenus(userId: number) {
+  return request<MenuItem[]>({
     url: '/auth/role-permission/getUserMenus',
     method: 'get',
     params: { userId }

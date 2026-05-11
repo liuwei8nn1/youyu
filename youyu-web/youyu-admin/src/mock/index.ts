@@ -1,4 +1,4 @@
-// Mock 拦截器已移至 src/utils/request.js
+// Mock 拦截器已移至 src/utils/request.ts
 // 此文件保留但不做任何拦截，避免冲突
 
 import { mockLogin, mockRefreshToken, mockGetUserMenus } from './auth'

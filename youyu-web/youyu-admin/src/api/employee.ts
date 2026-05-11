@@ -1,10 +1,11 @@
 import request from '@/utils/request'
+import type { Employee, PageRequest, PageResponse } from '@/types'
 
 /**
  * 分页查询员工列表
  */
-export function getEmployeeList(params) {
-  return request({
+export function getEmployeeList(params: PageRequest & Partial<Employee>) {
+  return request<PageResponse<Employee>>({
     url: '/user/employee/list',
     method: 'get',
     params
@@ -14,8 +15,8 @@ export function getEmployeeList(params) {
 /**
  * 获取员工详情
  */
-export function getEmployee(id) {
-  return request({
+export function getEmployee(id: number) {
+  return request<Employee>({
     url: `/user/employee/${id}`,
     method: 'get'
   })
@@ -24,8 +25,8 @@ export function getEmployee(id) {
 /**
  * 创建员工
  */
-export function createEmployee(data) {
-  return request({
+export function createEmployee(data: Partial<Employee>) {
+  return request<void>({
     url: '/user/employee/create',
     method: 'post',
     data
@@ -35,8 +36,8 @@ export function createEmployee(data) {
 /**
  * 更新员工
  */
-export function updateEmployee(data) {
-  return request({
+export function updateEmployee(data: Partial<Employee>) {
+  return request<void>({
     url: '/user/employee/update',
     method: 'post',
     data
@@ -46,8 +47,8 @@ export function updateEmployee(data) {
 /**
  * 删除员工
  */
-export function deleteEmployee(id) {
-  return request({
+export function deleteEmployee(id: number) {
+  return request<void>({
     url: '/user/employee/delete',
     method: 'post',
     params: { id }
@@ -57,8 +58,8 @@ export function deleteEmployee(id) {
 /**
  * 获取员工角色（从 Auth 服务查询）
  */
-export function getEmployeeRoles(id) {
-  return request({
+export function getEmployeeRoles(id: number) {
+  return request<number[]>({
     url: `/auth/user-role/roles/byUser`,
     method: 'get',
     params: { userId: id, userType: 2 }  // 员工属于 enterprise 类型

@@ -3,8 +3,8 @@ import request from '@/utils/request'
 /**
  * 为用户分配角色
  */
-export function assignRoleToUser(data) {
-  return request({
+export function assignRoleToUser(data: { userIdentityId: number; roleId: number }) {
+  return request<void>({
     url: '/auth/user-role/assign',
     method: 'post',
     data
@@ -14,8 +14,8 @@ export function assignRoleToUser(data) {
 /**
  * 批量为用户分配角色
  */
-export function assignRolesToUser(data) {
-  return request({
+export function assignRolesToUser(data: { userIdentityId: number; roleIds: number[] }) {
+  return request<void>({
     url: '/auth/user-role/assignBatch',
     method: 'post',
     data
@@ -25,8 +25,8 @@ export function assignRolesToUser(data) {
 /**
  * 撤销用户的指定角色
  */
-export function revokeRoleFromUser(data) {
-  return request({
+export function revokeRoleFromUser(data: { userIdentityId: number; roleId: number }) {
+  return request<void>({
     url: '/auth/user-role/revoke',
     method: 'post',
     data
@@ -36,8 +36,8 @@ export function revokeRoleFromUser(data) {
 /**
  * 撤销用户的所有角色
  */
-export function revokeAllRoles(userIdentityId) {
-  return request({
+export function revokeAllRoles(userIdentityId: number) {
+  return request<void>({
     url: '/auth/user-role/revokeAll',
     method: 'post',
     params: { userIdentityId }
@@ -47,8 +47,8 @@ export function revokeAllRoles(userIdentityId) {
 /**
  * 查询用户的角色ID列表（通过 userId + userType）
  */
-export function getUserRoles(userId, userType) {
-  return request({
+export function getUserRoles(userId: number, userType: number) {
+  return request<number[]>({
     url: '/auth/user-role/roles/byUser',
     method: 'get',
     params: { userId, userType }
@@ -58,8 +58,8 @@ export function getUserRoles(userId, userType) {
 /**
  * 检查用户是否拥有指定角色
  */
-export function hasRole(userIdentityId, roleId) {
-  return request({
+export function hasRole(userIdentityId: number, roleId: number) {
+  return request<boolean>({
     url: '/auth/user-role/hasRole',
     method: 'get',
     params: { userIdentityId, roleId }

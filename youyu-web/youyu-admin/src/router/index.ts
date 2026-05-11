@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, type RouteLocationNormalized, type NavigationGuardNext } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 
 // 静态路由（不需要权限）
@@ -41,11 +41,11 @@ let hasAddedRoutes = false
 /**
  * 根据菜单数据生成路由
  */
-function generateRoutes(menus, parentPath = '') {
-  const routes = []
+function generateRoutes(menus: any[], parentPath = ''): any[] {
+  const routes: any[] = []
 
   // 组件映射表 - 手动导入所有可能的组件
-  const componentMap = {
+  const componentMap: Record<string, any> = {
     'Layout': () => import('@/layout/index.vue'),
     'dashboard/index': () => import('@/views/dashboard/index.vue'),
     'system/user/index': () => import('@/views/system/user/index.vue'),
@@ -72,7 +72,7 @@ function generateRoutes(menus, parentPath = '') {
         fullPath = parentPath.endsWith('/') ? parentPath + menu.path : parentPath + '/' + menu.path
       }
       
-      const route = {
+      const route: any = {
         path: menu.path,
         name: menu.name.replace(/[\s-]/g, ''), // 移除空格和横线，作为路由名称
         meta: {
@@ -126,7 +126,7 @@ export function resetRouter() {
 }
 
 // 路由守卫
-router.beforeEach(async (to, from) => {
+router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
   const userStore = useUserStore()
   const hasToken = userStore.token
 

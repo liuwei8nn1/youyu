@@ -1,10 +1,11 @@
 import request from '@/utils/request'
+import type { MenuItem } from '@/types'
 
 /**
  * 获取所有菜单（树形结构）
  */
 export function getMenuTree() {
-  return request({
+  return request<MenuItem[]>({
     url: '/auth/role-permission/menus',
     method: 'get'
   })
@@ -14,7 +15,7 @@ export function getMenuTree() {
  * 获取所有菜单（平铺结构，用于分配）
  */
 export function getAllMenus() {
-  return request({
+  return request<MenuItem[]>({
     url: '/auth/role-permission/menus/all',
     method: 'get'
   })
@@ -23,8 +24,8 @@ export function getAllMenus() {
 /**
  * 获取菜单详情
  */
-export function getMenu(id) {
-  return request({
+export function getMenu(id: number) {
+  return request<MenuItem>({
     url: `/auth/role-permission/menus/${id}`,
     method: 'get'
   })
@@ -33,8 +34,8 @@ export function getMenu(id) {
 /**
  * 创建菜单
  */
-export function createMenu(data) {
-  return request({
+export function createMenu(data: Partial<MenuItem>) {
+  return request<void>({
     url: '/auth/role-permission/menus',
     method: 'post',
     data
@@ -44,8 +45,8 @@ export function createMenu(data) {
 /**
  * 更新菜单
  */
-export function updateMenu(id, data) {
-  return request({
+export function updateMenu(id: number, data: Partial<MenuItem>) {
+  return request<void>({
     url: `/auth/role-permission/updateMenu?menuId=${id}`,
     method: 'post',
     data
@@ -55,8 +56,8 @@ export function updateMenu(id, data) {
 /**
  * 删除菜单
  */
-export function deleteMenu(id) {
-  return request({
+export function deleteMenu(id: number) {
+  return request<void>({
     url: `/auth/role-permission/deleteMenu?menuId=${id}`,
     method: 'post'
   })

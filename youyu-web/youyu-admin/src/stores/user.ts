@@ -3,27 +3,27 @@ import { ref } from 'vue'
 import { login as loginApi, logout as logoutApi, getUserMenus } from '@/api/auth'
 import { saveTokens, clearTokens } from '@/utils/request'
 import router, { resetRouter } from '@/router'
+import type { UserInfo, MenuItem, LoginRequest } from '@/types'
 
 export const useUserStore = defineStore('user', () => {
-  const token = ref(localStorage.getItem('accessToken') || '')
-  const refreshTokenValue = ref(localStorage.getItem('refreshToken') || '')
+  const token = ref<string>(localStorage.getItem('accessToken') || '')
+  const refreshTokenValue = ref<string>(localStorage.getItem('refreshToken') || '')
   
   // 从 localStorage 恢复用户信息
   const savedUserInfo = localStorage.getItem('userInfo')
-  const userInfo = ref(savedUserInfo ? JSON.parse(savedUserInfo) : null)
+  const userInfo = ref<UserInfo | null>(savedUserInfo ? JSON.parse(savedUserInfo) : null)
   
-  const menus = ref([])
-  const roles = ref([])
+  const menus = ref<MenuItem[]>([])
+  const roles = ref<string[]>([])
 
   /**
    * 登录
    */
-  async function login(loginForm) {
+  async function login(loginForm: LoginRequest) {
     try {
       const res = await loginApi(loginForm)
 
-      // 兼容字符串和数字类型的 code
-      if (res.code == 200 && res.data) {
+      if (res.code === "200" && res.data) {
         const { accessToken, refreshToken, userId, username, userType, roles: userRoles } = res.data
 
         // 保存 token
@@ -32,7 +32,7 @@ export const useUserStore = defineStore('user', () => {
         refreshTokenValue.value = refreshToken
 
         // 保存用户信息
-        const userData = {
+        const userData: UserInfo = {
           userId,
           username,
           userType
@@ -46,7 +46,7 @@ export const useUserStore = defineStore('user', () => {
       } else {
         return { success: false, message: res.message || '登录失败' }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login error:', error)
       return { success: false, message: error.message || '登录失败' }
     }
@@ -64,8 +64,7 @@ export const useUserStore = defineStore('user', () => {
       
       const res = await getUserMenus(userInfo.value.userId)
 
-      // 兼容字符串和数字类型的 code
-      if (res.code == 200 && res.data) {
+      if (res.code === "200" && res.data) {
         menus.value = res.data
         return res.data
       }
