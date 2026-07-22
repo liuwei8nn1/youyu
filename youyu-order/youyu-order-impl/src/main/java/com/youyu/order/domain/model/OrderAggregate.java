@@ -147,17 +147,17 @@ public class OrderAggregate implements Serializable {
      * @param userId           用户ID
      * @param productId        商品ID
      * @param quantity         购买数量
-     * @param amount           订单金额
+     * @param price            商品单价
      * @param shippingAddress  收货地址快照
      * @return 订单聚合根
      */
-    public static OrderAggregate createNormalOrder(Long userId, Long productId, Integer quantity, 
-                                                    BigDecimal amount, ShippingAddress shippingAddress) {
+    public static OrderAggregate createNormalOrder(Long userId, Long productId, Integer quantity,
+                                                    BigDecimal price, ShippingAddress shippingAddress) {
         OrderAggregate order = new OrderAggregate();
         order.userId = userId;
         order.productId = productId;
         order.quantity = quantity;
-        order.amount = amount;
+        order.amount = price.multiply(new BigDecimal(quantity));
         order.orderType = ORDER_TYPE_NORMAL;
         order.status = STATUS_PENDING;
         order.shippingAddress = shippingAddress;

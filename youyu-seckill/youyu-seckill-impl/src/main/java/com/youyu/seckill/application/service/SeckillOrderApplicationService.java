@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import com.youyu.common.model.Result;
 import com.youyu.seckill.application.dto.SeckillOrderResponse;
 import com.youyu.seckill.domain.model.SeckillActivityAggregate;
-import com.youyu.seckill.domain.repository.SeckillActivityRepository;
 import com.youyu.seckill.domain.service.SeckillStockDomainService;
 import com.youyu.seckill.infrastructure.messaging.SeckillOrderMessageProducer;
 import jakarta.annotation.Resource;
@@ -25,8 +24,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class SeckillOrderApplicationService {
 
-    @Resource
-    private SeckillActivityRepository activityRepository;
     @Resource
     private SeckillStockDomainService stockDomainService;
     @Resource
@@ -63,71 +60,29 @@ public class SeckillOrderApplicationService {
     public Result<SeckillOrderResponse> createSeckillOrder(Long userId, Long productId, Integer quantity) {
         log.info("秒杀订单创建开始，userId: {}, productId: {}, quantity: {}", userId, productId, quantity);
 
-        // 0. 用户级别限流检查（防止5秒内重复提交）
+        // 1. 用户级别限流
         if (!stockDomainService.checkUserFrequencyLimit(userId, productId)) {
-            log.warn("用户操作过于频繁，userId: {}, productId: {}", userId, productId);
             return Result.error("操作过于频繁，请稍后重试");
         }
 
-        // 1. 从 Redis 获取活动信息（高性能）
+        // 2. 获取活动并校验时间
         SeckillActivityAggregate activity = stockDomainService.getCachedActivity(productId);
-        
-        // 如果 Redis 中没有，降级查数据库
-        if (activity == null) {
-            log.warn("Redis 中未找到活动信息，降级查数据库，productId: {}", productId);
-            activity = activityRepository.findByProductId(productId);
-            if (activity == null) {
-                log.warn("秒杀活动不存在，productId: {}", productId);
-                return Result.error("秒杀活动不存在");
-            }
-            // 缓存到 Redis
-            stockDomainService.cacheActivity(activity);
-        }
+        activity.assertActive();
 
-        // 2. 校验活动时间
-        if (!activity.isActive()) {
-            if (activity.isNotStarted()) {
-                return Result.error("秒杀活动未开始");
-            } else {
-                return Result.error("秒杀活动已结束");
-            }
-        }
+        // 3. 获取秒杀价格（聚合根自校验）
+        BigDecimal seckillPrice = activity.getValidatedSeckillPrice();
 
-        // 3. 从活动对象中获取秒杀价格（已在 Redis 缓存中）
-        BigDecimal seckillPrice = activity.getSeckillPrice();
-        if (seckillPrice == null) {
-            log.error("活动价格为空，productId: {}", productId);
-            return Result.error("活动配置错误");
-        }
-        log.info("从活动缓存中获取秒杀价格，productId: {}, price: {}", productId, seckillPrice);
+        // 4. 原子扣减库存（失败由全局异常处理器统一转 Result）
+        stockDomainService.deductStockAndRecordPurchase(productId, userId, quantity, activity.getLimitPerUser());
 
-        // 4. Redis Lua 原子扣减库存和记录购买（同步，快速失败）
-        Long remainingStock = stockDomainService.deductStockAndRecordPurchase(
-                productId, userId, quantity, activity.getLimitPerUser());
-        
-        if (remainingStock == -1) {
-            log.warn("秒杀库存不足，userId: {}, productId: {}", userId, productId);
-            return Result.error("秒杀失败，库存不足");
-        }
-        
-        if (remainingStock == -2) {
-            log.warn("用户已达限购数量，userId: {}, productId: {}, limit: {}",
-                    userId, productId, activity.getLimitPerUser());
-            return Result.error("已达限购数量");
-        }
-
-        // 7. 生成订单ID
+        // 5. 生成订单ID + 发送 MQ
         String orderId = messageProducer.generateOrderId();
-
-        // 8. 发送 MQ 消息（异步创建订单）
         try {
             messageProducer.send(orderId, userId, productId, quantity, seckillPrice, activity.getId());
             log.info("秒杀订单消息发送成功，orderId: {}", orderId);
-            SeckillOrderResponse response = SeckillOrderResponse.of(orderId, "排队中，请稍后查询结果");
-            return Result.success(response);
+            return Result.success(SeckillOrderResponse.of(orderId, "排队中，请稍后查询结果"));
         } catch (Exception e) {
             log.error("秒杀订单消息发送失败，回滚库存，orderId: {}", orderId, e);
-            // 补偿：回滚 Redis 库存
             stockDomainService.rollbackStock(productId, quantity);
             return Result.error("系统繁忙，请稍后重试");
         }

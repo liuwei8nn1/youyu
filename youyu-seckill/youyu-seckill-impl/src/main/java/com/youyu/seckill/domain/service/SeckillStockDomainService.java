@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.alibaba.fastjson2.JSON;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.youyu.framework.cache.redis.RedisUtil;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.youyu.framework.cache.redis.RedisKeyBuilder;
+import com.youyu.common.exception.DomainException;
+import com.youyu.framework.cache.redis.RedisUtil;
 import com.youyu.seckill.domain.model.SeckillActivityAggregate;
+import com.youyu.seckill.domain.repository.SeckillActivityRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,12 +28,14 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SeckillStockDomainService {
 
+    private final SeckillActivityRepository activityRepository;
+
     /**
      * 本地缓存，用于缓存秒杀活动信息
      * 过期时间：10分钟
      * 最大容量：1000
      */
-    private final Cache<Long, SeckillActivityAggregate> activityLocalCache = CacheBuilder.newBuilder()
+    private final Cache<Long, SeckillActivityAggregate> activityLocalCache = Caffeine.newBuilder()
             .expireAfterWrite(10, TimeUnit.MINUTES)
             .maximumSize(1000)
             .build();
@@ -47,7 +51,7 @@ public class SeckillStockDomainService {
      * - 单条记录约120字节，10万条约12MB
      * - 5秒自动过期，不会累积
      */
-    private final Cache<String, Byte> userFrequencyLocalCache = CacheBuilder.newBuilder()
+    private final Cache<String, Byte> userFrequencyLocalCache = Caffeine.newBuilder()
             .expireAfterWrite(5, TimeUnit.SECONDS)
             .maximumSize(100000)
             .build();
@@ -109,7 +113,8 @@ public class SeckillStockDomainService {
      * @param userId    用户ID
      * @param quantity  扣减数量
      * @param limit     用户限购数量
-     * @return 剩余库存，-1 表示库存不足，-2 表示超过限购
+     * @return 剩余库存
+     * @throws DomainException 库存不足或超过限购
      */
     public Long deductStockAndRecordPurchase(Long productId, Long userId, Integer quantity, Integer limit) {
         log.info("开始扣减秒杀库存并记录购买，productId: {}, userId: {}, quantity: {}", productId, userId, quantity);
@@ -126,19 +131,14 @@ public class SeckillStockDomainService {
                 Long.class
         );
 
-        if (remainingStock == null) {
-            log.warn("秒杀操作失败，productId: {}, userId: {}", productId, userId);
-            return -1L;
-        }
-
-        if (remainingStock == -1) {
+        if (remainingStock == null || remainingStock == -1) {
             log.warn("秒杀库存不足，productId: {}, userId: {}", productId, userId);
-            return -1L;
+            throw new DomainException("秒杀失败，库存不足");
         }
 
         if (remainingStock == -2) {
-            log.warn("用户已达限购数量，productId: {}, userId: {}", productId, userId);
-            return -2L;
+            log.warn("用户已达限购数量，productId: {}, userId: {}, limit: {}", productId, userId, limit);
+            throw new DomainException("已达限购数量");
         }
 
         log.info("秒杀库存扣减和购买记录成功，productId: {}, userId: {}, remainingStock: {}", productId, userId, remainingStock);
@@ -287,9 +287,7 @@ public class SeckillStockDomainService {
         // 使用管道批量处理
         RedisUtil.execInPipeline(redisOps -> {
             // 缓存活动信息
-            redisOps.opsForValue().set(activityKey, activityJson);
-            redisOps.expire(activityKey, 86400, java.util.concurrent.TimeUnit.SECONDS);
-            
+            redisOps.opsForValue().set(activityKey, activityJson, 86400, TimeUnit.SECONDS);
             // 初始化库存
             redisOps.opsForValue().set(stockKey, activity.getStock().toString());
         });
@@ -306,29 +304,26 @@ public class SeckillStockDomainService {
      * @return 活动聚合根，不存在返回 null
      */
     public SeckillActivityAggregate getCachedActivity(Long productId) {
-        // 1. 先从本地缓存获取
-        SeckillActivityAggregate activity = activityLocalCache.getIfPresent(productId);
-        if (activity != null) {
-            log.info("从本地缓存获取活动信息，productId: {}", productId);
+        return activityLocalCache.get(productId,(k)->{// Caffeine 的 get 方法保证了缓存加载的原子性，避免并发场景下的缓存击穿
+            // query from redis
+            String activityKey = RedisKeyBuilder.Seckill.activity(productId);
+            String activityJson = RedisUtil.opsForValue().get(activityKey);
+            if (activityJson != null) {
+                SeckillActivityAggregate activity = JSON.parseObject(activityJson, SeckillActivityAggregate.class);
+                if(activity != null){
+                    return activity;
+                }
+            }
+            // query from db, 后续可以考虑分布式锁
+            SeckillActivityAggregate activity = activityRepository.findByProductId(productId);
+            if (activity == null) {
+                log.warn("秒杀活动不存在，productId: {}", productId);
+                throw new IllegalArgumentException("秒杀活动不存在");
+            }
+            // 缓存到 Redis
+            this.cacheActivity(activity);
             return activity;
-        }
-        
-        // 2. 从 Redis 获取
-        String activityKey = RedisKeyBuilder.Seckill.activity(productId);
-        String activityJson = RedisUtil.opsForValue().get(activityKey);
-        if (activityJson == null) {
-            return null;
-        }
-        
-        activity = JSON.parseObject(activityJson, SeckillActivityAggregate.class);
-        
-        // 3. 缓存到本地
-        if (activity != null) {
-            activityLocalCache.put(productId, activity);
-            log.info("从Redis获取活动信息并缓存到本地，productId: {}", productId);
-        }
-        
-        return activity;
+        });
     }
 
     /**

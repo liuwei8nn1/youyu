@@ -13,6 +13,7 @@ import com.youyu.common.constant.BaseI18nKey;
 import com.youyu.framework.context.*;
 import com.youyu.common.model.Result;
 import com.youyu.common.exception.AuthFailException;
+import com.youyu.common.exception.DomainException;
 import com.youyu.common.exception.PermissionException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -65,6 +66,13 @@ public class GlobalExceptionHandler {
         String message = I18N.msg(BaseI18nKey.SENTINEL_AUTHORITY_DENIED);
         UserInfo currentUserInfo = UserContextHolder.getUserInfo();
         return Result.error(String.valueOf(HttpStatus.FORBIDDEN.value()), message).setTraceId(currentUserInfo.getTraceId());
+    }
+
+    @ExceptionHandler(DomainException.class)
+    public Result<Object> handleDomainException(DomainException ex) {
+        UserInfo currentUserInfo = UserContextHolder.getUserInfo();
+        log.warn("领域异常: {}", ex.getMessage());
+        return Result.error(ex.getCode(), ex.getMessage()).setTraceId(currentUserInfo.getTraceId());
     }
 
     @ExceptionHandler(Exception.class)

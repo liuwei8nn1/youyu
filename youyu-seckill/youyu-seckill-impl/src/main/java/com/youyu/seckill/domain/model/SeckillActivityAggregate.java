@@ -2,11 +2,11 @@ package com.youyu.seckill.domain.model;
 
 import lombok.Getter;
 
+import com.youyu.common.exception.DomainException;
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * 秒杀活动聚合根（领域层）
@@ -189,6 +189,33 @@ public class SeckillActivityAggregate implements Serializable {
      */
     public boolean isEnded() {
         return LocalDateTime.now().isAfter(endTime);
+    }
+
+    /**
+     * 校验活动是否正在进行中
+     *
+     * @throws DomainException 活动未开始或已结束
+     */
+    public void assertActive() {
+        if (isEnded()) {
+            throw new DomainException("秒杀活动已结束");
+        }
+        if (isNotStarted()) {
+            throw new DomainException("秒杀活动未开始");
+        }
+    }
+
+    /**
+     * 获取校验后的秒杀价格（保证不为空）
+     *
+     * @return 秒杀价格
+     * @throws IllegalArgumentException 如果价格为 null
+     */
+    public BigDecimal getValidatedSeckillPrice() {
+        if (seckillPrice == null) {
+            throw new IllegalArgumentException("秒杀活动价格未配置，productId: " + productId);
+        }
+        return seckillPrice;
     }
 
     /**

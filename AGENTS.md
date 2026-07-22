@@ -50,6 +50,13 @@ mvn spring-boot:run -pl youyu-auth/youyu-auth-bootstrap
 
 `interfaces`（Controller）→ `application`（Service 编排）→ `domain`（实体/领域服务）→ `infrastructure`（Mapper/Repository/外部调用）
 
+### Domain 层约束
+- 允许持有 Repository Interface 等抽象契约（依赖反转）
+- 允许使用 Caffeine、RedisUtil 等标配工具
+- 禁止依赖 MyBatis Mapper、RocketMQTemplate、JdbcTemplate 等具体实现类
+- 禁止使用 Spring 注解（@Service、@Transactional 等）
+- 领域异常继承 `DomainException`（位于 `youyu-common`）
+
 ## MQ 可靠发送
 
 框架层提供 `ReliableMessageProducer`（位于 youyu-framework），支持同步/异步/延时消息，内置补偿机制。业务服务禁止直接使用 RocketMQTemplate，统一通过 ReliableMessageProducer 发送。

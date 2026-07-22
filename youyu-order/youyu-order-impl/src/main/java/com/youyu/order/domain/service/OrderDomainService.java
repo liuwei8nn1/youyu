@@ -32,12 +32,12 @@ public class OrderDomainService {
      * @param userId           用户ID
      * @param productId        商品ID
      * @param quantity         购买数量
-     * @param amount           订单金额
+     * @param price            商品单价
      * @param shippingAddress  收货地址快照
      * @return 订单聚合根
      */
-    public OrderAggregate createNormalOrder(Long userId, Long productId, Integer quantity, 
-                                             BigDecimal amount, ShippingAddress shippingAddress) {
+    public OrderAggregate createNormalOrder(Long userId, Long productId, Integer quantity,
+                                             BigDecimal price, ShippingAddress shippingAddress) {
         log.info("创建普通订单，userId: {}, productId: {}, quantity: {}", userId, productId, quantity);
 
         Long orderId = snowflakeIdGenerator.nextId();
@@ -45,11 +45,12 @@ public class OrderDomainService {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime payExpireTime = now.plusMinutes(OrderAggregate.NORMAL_ORDER_PAY_TIMEOUT_MINUTES);
 
-        OrderAggregate order = OrderAggregate.createNormalOrder(userId, productId, quantity, amount, shippingAddress);
+        OrderAggregate order = OrderAggregate.createNormalOrder(userId, productId, quantity, price, shippingAddress);
         order.initialize(orderId, orderNo, payExpireTime);
         order.validate();
 
-        log.info("普通订单创建成功，orderId: {}, orderNo: {}", orderId, orderNo);
+        log.info("普通订单创建成功，orderId: {}, orderNo: {}, amount: {}",
+                orderId, orderNo, order.getAmount());
         return order;
     }
 

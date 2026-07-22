@@ -1,5 +1,6 @@
 package com.youyu.order.application.service;
 
+import com.youyu.common.exception.DomainException;
 import com.youyu.common.util.CheckDigitUtil;
 import com.youyu.framework.context.I18N;
 import com.youyu.order.api.dto.SeckillOrderTimeoutMessage;
@@ -14,12 +15,12 @@ import com.youyu.order.infrastructure.messaging.OrderTimeoutMessageProducer;
 import com.youyu.order.infrastructure.messaging.SeckillStockRollbackMessageProducer;
 import com.youyu.product.api.dto.ProductDetailDTO;
 
+import java.math.BigDecimal;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
 
 @Slf4j
 @Service
@@ -53,37 +54,34 @@ public class OrderApplicationService {
     public OrderAggregate createOrder(Long userId, Long productId, Integer quantity) {
         log.info("普通订单创建开始，userId: {}, productId: {}, quantity: {}", userId, productId, quantity);
 
-        // 1. 查询商品详情(通过仓储接口)
+        // 1. 查询商品详情
         ProductDetailDTO product = productRepository.findById(productId)
-            .orElseThrow(() -> new RuntimeException("商品不存在，productId: " + productId));
+            .orElseThrow(() -> new DomainException("商品不存在"));
 
-        // 2. 查询用户默认收货地址(通过仓储接口)
+        // 2. 查询用户默认收货地址
         ShippingAddress shippingAddress = userRepository.findDefaultAddress(userId)
-            .orElseThrow(() -> new RuntimeException("未找到默认收货地址，userId: " + userId));
+            .orElseThrow(() -> new DomainException("未找到默认收货地址"));
 
-        // 3. 计算订单金额(使用商品真实价格)
-        BigDecimal amount = product.getPrice().multiply(new BigDecimal(quantity));
-
-        // 4. 调用领域服务创建订单
+        // 3. 调用领域服务创建订单（内部完成金额计算）
         OrderAggregate order = orderDomainService.createNormalOrder(
-            userId, productId, quantity, amount, shippingAddress
+            userId, productId, quantity, product.getPrice(), shippingAddress
         );
 
-        // 5. 保存订单到数据库
+        // 4. 保存订单到数据库
         orderRepository.save(order);
 
-        // 6. 发送订单超时延时消息（5分钟后检查是否支付）
+        // 5. 发送订单超时延时消息
         orderTimeoutMessageProducer.sendOrderTimeoutMessage(
             order.getId(),
             userId,
             productId,
             quantity,
             "NORMAL",
-            null  // 普通订单没有活动ID
+            null
         );
 
         log.info("普通订单创建成功，orderId: {}, orderNo: {}, amount: {}", 
-            order.getId(), order.getOrderNo(), amount);
+            order.getId(), order.getOrderNo(), order.getAmount());
         return order;
     }
 
