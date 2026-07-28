@@ -83,7 +83,7 @@ public class SeckillOrderApplicationService {
             return Result.success(SeckillOrderResponse.of(orderId, "排队中，请稍后查询结果"));
         } catch (Exception e) {
             log.error("秒杀订单消息发送失败，回滚库存，orderId: {}", orderId, e);
-            stockDomainService.rollbackStock(productId, quantity);
+            stockDomainService.rollbackStockAndPurchase(productId, userId, quantity);
             return Result.error("系统繁忙，请稍后重试");
         }
     }

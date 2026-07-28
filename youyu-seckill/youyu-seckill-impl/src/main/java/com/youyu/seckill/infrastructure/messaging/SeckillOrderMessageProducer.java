@@ -3,13 +3,9 @@ package com.youyu.seckill.infrastructure.messaging;
 import com.alibaba.fastjson2.JSON;
 import com.youyu.framework.mq.compensation.application.provider.ReliableMessageProducer;
 import com.youyu.order.api.dto.SeckillOrderMessage;
-import com.youyu.order.api.dto.SeckillOrderTimeoutMessage;
 import com.youyu.common.model.SnowflakeIdGenerator;
-import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.rocketmq.spring.core.RocketMQTemplate;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -27,11 +23,6 @@ import java.math.BigDecimal;
 @RequiredArgsConstructor
 public class SeckillOrderMessageProducer {
 
-    /**
-     * RocketMQ 模板（由框架层提供）
-     */
-    private final RocketMQTemplate seckillRocketMQTemplate;
-    
     private final SnowflakeIdGenerator snowflakeIdGenerator;
     
     /**
@@ -95,52 +86,5 @@ public class SeckillOrderMessageProducer {
                 // TODO: 可以触发告警或人工介入
             }
         );
-        
-        // 发送成功后，发送延时消息处理超时未支付
-        sendTimeoutMessage(orderId, userId, productId, quantity);
-    }
-
-    /**
-     * 发送秒杀订单超时消息（延时队列）
-     * <p>
-     * 延时时间：5分钟（秒杀订单支付超时时间）
-     * <p>
-     * RocketMQ 默认延时级别说明：
-     * 1=1s, 2=5s, 3=10s, 4=30s, 5=1m, 6=2m, 7=3m, 8=4m, 9=5m, 10=6m,
-     * 11=7m, 12=8m, 13=9m, 14=10m, 15=20m, 16=30m, 17=1h, 18=2h
-     *
-     * @param orderId    订单ID
-     * @param userId     用户ID
-     * @param productId  商品ID
-     * @param quantity   购买数量
-     */
-    public void sendTimeoutMessage(String orderId, Long userId, Long productId, Integer quantity) {
-        // 延时级别 9 对应 5 分钟延时
-        int delayLevel = 9;
-        
-        SeckillOrderTimeoutMessage message = new SeckillOrderTimeoutMessage(
-            Long.parseLong(orderId), userId, productId, quantity, "SECKILL", null
-        );
-        String messageBody = JSON.toJSONString(message);
-        String messageId = "timeout-" + orderId;
-        
-        try {
-            // 使用框架层的同步延时发送，自动处理失败补偿
-            reliableMessageProducer.sendSyncWithDelay(
-                "order-timeout-topic",
-                "timeout",
-                messageId,
-                messageBody,
-                delayLevel,
-                (sendFail) -> {
-                    // 补偿记录保存失败时的回调
-                    log.error("【严重】订单超时延时消息补偿记录保存失败，orderId: {}", orderId, sendFail.e());
-                }
-            );
-            log.info("订单超时延时消息发送成功，orderId: {}", orderId);
-        } catch (Exception e) {
-            log.error("订单超时延时消息发送失败，orderId: {}", orderId, e);
-            // 延时消息发送失败不影响主流程，只记录日志
-        }
     }
 }

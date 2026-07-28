@@ -146,6 +146,22 @@ public class SeckillStockDomainService {
     }
 
     /**
+     * 回滚库存和用户购买数量（补偿机制，使用管道保证原子性）
+     * <p>
+     * 适用场景：MQ 发送失败时，需要同时恢复已扣减的库存和用户限购数量
+     */
+    public void rollbackStockAndPurchase(Long productId, Long userId, Integer quantity) {
+        log.info("开始回滚库存和用户购买数量，productId: {}, userId: {}, quantity: {}", productId, userId, quantity);
+        String stockKey = RedisKeyBuilder.Seckill.stock(productId);
+        String userKey = RedisKeyBuilder.Seckill.userLimit(userId, productId);
+        RedisUtil.execInPipeline(redisOps -> {
+            redisOps.opsForValue().increment(stockKey, quantity);
+            redisOps.opsForValue().decrement(userKey, quantity);
+        });
+        log.info("库存和用户购买数量回滚成功，productId: {}, userId: {}, quantity: {}", productId, userId, quantity);
+    }
+
+    /**
      * 回滚库存扣减（补偿机制）
      * <p>
      * 适用场景：订单创建失败时，需要恢复已扣减的库存
