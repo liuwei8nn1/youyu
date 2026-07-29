@@ -2,7 +2,7 @@ package com.youyu.auth.application.service;
 
 import com.youyu.auth.api.dto.CreateUserIdentityRequest;
 import com.youyu.auth.api.dto.CreateUserIdentityResponse;
-import com.youyu.auth.domain.model.UserIdentity;
+import com.youyu.auth.domain.aggregate.UserIdentity;
 import com.youyu.auth.domain.repository.UserIdentityRepository;
 import com.youyu.framework.context.UserType;
 import lombok.RequiredArgsConstructor;

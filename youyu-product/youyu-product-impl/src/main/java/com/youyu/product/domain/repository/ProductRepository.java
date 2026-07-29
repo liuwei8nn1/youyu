@@ -1,16 +1,16 @@
 package com.youyu.product.domain.repository;
 
-import com.youyu.product.domain.model.ProductAggregate;
-
 import java.util.Optional;
+
+import com.youyu.product.domain.aggregate.Product;
 
 public interface ProductRepository {
 
-    void save(ProductAggregate product);
+    void save(Product product);
 
-    Optional<ProductAggregate> findById(Long productId);
+    Optional<Product> findById(Long productId);
 
-    void update(ProductAggregate product);
+    void update(Product product);
 
     boolean deductStock(Long productId, Integer quantity);
 

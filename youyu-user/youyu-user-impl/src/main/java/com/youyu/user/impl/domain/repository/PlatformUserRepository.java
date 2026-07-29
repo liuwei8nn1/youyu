@@ -1,6 +1,6 @@
 package com.youyu.user.impl.domain.repository;
 
-import com.youyu.user.impl.domain.model.PlatformUser;
+import com.youyu.user.impl.domain.entity.PlatformUser;
 
 import java.util.Optional;
 

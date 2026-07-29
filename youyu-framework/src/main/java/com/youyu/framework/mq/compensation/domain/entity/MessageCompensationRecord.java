@@ -1,4 +1,4 @@
-package com.youyu.framework.mq.compensation.domain.model;
+package com.youyu.framework.mq.compensation.domain.entity;
 
 import lombok.Data;
 

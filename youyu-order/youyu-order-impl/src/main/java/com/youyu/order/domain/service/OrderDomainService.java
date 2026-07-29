@@ -1,7 +1,7 @@
 package com.youyu.order.domain.service;
 
-import com.youyu.order.domain.model.OrderAggregate;
-import com.youyu.order.domain.model.ShippingAddress;
+import com.youyu.order.domain.aggregate.Order;
+import com.youyu.order.domain.valueobject.ShippingAddress;
 import com.youyu.common.util.CheckDigitUtil;
 import com.youyu.common.model.SnowflakeIdGenerator;
 import lombok.RequiredArgsConstructor;
@@ -36,16 +36,16 @@ public class OrderDomainService {
      * @param shippingAddress  收货地址快照
      * @return 订单聚合根
      */
-    public OrderAggregate createNormalOrder(Long userId, Long productId, Integer quantity,
-                                             BigDecimal price, ShippingAddress shippingAddress) {
+    public Order createNormalOrder(Long userId, Long productId, Integer quantity,
+                                                                BigDecimal price, ShippingAddress shippingAddress) {
         log.info("创建普通订单，userId: {}, productId: {}, quantity: {}", userId, productId, quantity);
 
         Long orderId = snowflakeIdGenerator.nextId();
         String orderNo = CheckDigitUtil.addCheckDigit(orderId);
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime payExpireTime = now.plusMinutes(OrderAggregate.NORMAL_ORDER_PAY_TIMEOUT_MINUTES);
+        LocalDateTime payExpireTime = now.plusMinutes(Order.NORMAL_ORDER_PAY_TIMEOUT_MINUTES);
 
-        OrderAggregate order = OrderAggregate.createNormalOrder(userId, productId, quantity, price, shippingAddress);
+        Order order = Order.createNormalOrder(userId, productId, quantity, price, shippingAddress);
         order.initialize(orderId, orderNo, payExpireTime);
         order.validate();
 
@@ -65,17 +65,17 @@ public class OrderDomainService {
      * @param shippingAddress  收货地址快照
      * @return 订单聚合根
      */
-    public OrderAggregate createSeckillOrder(Long userId, Long productId, Integer quantity,
-                                              BigDecimal amount, Long activityId, 
-                                              ShippingAddress shippingAddress) {
+    public Order createSeckillOrder(Long userId, Long productId, Integer quantity,
+                                                                 BigDecimal amount, Long activityId,
+                                                                 ShippingAddress shippingAddress) {
         log.info("创建秒杀订单，userId: {}, productId: {}, activityId: {}", userId, productId, activityId);
 
         Long orderId = snowflakeIdGenerator.nextId();
         String orderNo = CheckDigitUtil.addCheckDigit(orderId);
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime payExpireTime = now.plusMinutes(OrderAggregate.SECKILL_ORDER_PAY_TIMEOUT_MINUTES);
+        LocalDateTime payExpireTime = now.plusMinutes(Order.SECKILL_ORDER_PAY_TIMEOUT_MINUTES);
 
-        OrderAggregate order = OrderAggregate.createSeckillOrder(userId, productId, quantity, amount, activityId, shippingAddress);
+        Order order = Order.createSeckillOrder(userId, productId, quantity, amount, activityId, shippingAddress);
         order.initialize(orderId, orderNo, payExpireTime);
         order.validate();
 
@@ -88,7 +88,7 @@ public class OrderDomainService {
      *
      * @param order 订单聚合根
      */
-    public void validateOrder(OrderAggregate order) {
+    public void validateOrder(Order order) {
         if (order.getQuantity() <= 0) {
             throw new IllegalArgumentException("订单数量必须大于0");
         }
@@ -117,7 +117,7 @@ public class OrderDomainService {
      *
      * @param order 订单聚合根
      */
-    public void handleOrderTimeout(OrderAggregate order) {
+    public void handleOrderTimeout(Order order) {
         log.info("处理订单超时，orderId: {}, orderType: {}", order.getId(), order.getOrderType());
         
         // 检查订单是否已支付

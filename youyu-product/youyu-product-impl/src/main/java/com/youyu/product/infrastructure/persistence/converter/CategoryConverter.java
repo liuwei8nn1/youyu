@@ -1,6 +1,6 @@
 package com.youyu.product.infrastructure.persistence.converter;
 
-import com.youyu.product.domain.model.CategoryAggregate;
+import com.youyu.product.domain.aggregate.Category;
 import com.youyu.product.infrastructure.persistence.entity.CategoryDO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -10,11 +10,11 @@ public interface CategoryConverter {
 
     CategoryConverter INSTANCE = Mappers.getMapper(CategoryConverter.class);
 
-    default CategoryAggregate toAggregate(CategoryDO categoryDO) {
+    default Category toAggregate(CategoryDO categoryDO) {
         if (categoryDO == null) {
             return null;
         }
-        return CategoryAggregate.restore(
+        return Category.restore(
             categoryDO.getId(),
             categoryDO.getCategoryName(),
             categoryDO.getParentId(),
@@ -24,5 +24,5 @@ public interface CategoryConverter {
         );
     }
 
-    CategoryDO toDO(CategoryAggregate aggregate);
+    CategoryDO toDO(Category aggregate);
 }

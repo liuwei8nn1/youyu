@@ -1,18 +1,16 @@
 package com.youyu.user.impl.application.service;
 
+import java.util.Optional;
+
 import com.youyu.user.api.dto.AddressDTO;
 import com.youyu.user.api.dto.UserLoginInfo;
-import com.youyu.user.impl.domain.model.Address;
-import com.youyu.user.impl.domain.model.UserProfile;
+import com.youyu.user.impl.domain.aggregate.UserProfile;
+import com.youyu.user.impl.domain.entity.Address;
 import com.youyu.user.impl.domain.repository.AddressRepository;
 import com.youyu.user.impl.domain.repository.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * 用户查询应用服务

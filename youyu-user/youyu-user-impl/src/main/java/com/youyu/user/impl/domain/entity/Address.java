@@ -1,4 +1,4 @@
-package com.youyu.user.impl.domain.model;
+package com.youyu.user.impl.domain.entity;
 
 import lombok.Getter;
 

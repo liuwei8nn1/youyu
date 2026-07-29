@@ -1,23 +1,23 @@
 package com.youyu.product.domain.repository;
 
-import com.youyu.product.domain.model.CategoryAggregate;
-
 import java.util.List;
 import java.util.Optional;
 
+import com.youyu.product.domain.aggregate.Category;
+
 public interface CategoryRepository {
 
-    void save(CategoryAggregate category);
+    void save(Category category);
 
-    Optional<CategoryAggregate> findById(Long categoryId);
+    Optional<Category> findById(Long categoryId);
 
-    void update(CategoryAggregate category);
+    void update(Category category);
 
-    List<CategoryAggregate> findRootCategories();
+    List<Category> findRootCategories();
 
-    List<CategoryAggregate> findByParentId(Long parentId);
+    List<Category> findByParentId(Long parentId);
 
-    List<CategoryAggregate> findCategoryTree();
+    List<Category> findCategoryTree();
 
     boolean removeById(Long categoryId);
 }

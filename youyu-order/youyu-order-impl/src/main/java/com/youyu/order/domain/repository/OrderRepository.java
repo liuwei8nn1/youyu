@@ -1,18 +1,18 @@
 package com.youyu.order.domain.repository;
 
-import com.youyu.order.domain.model.OrderAggregate;
-
 import java.util.Optional;
+
+import com.youyu.order.domain.aggregate.Order;
 
 public interface OrderRepository {
 
-    void save(OrderAggregate order);
+    void save(Order order);
 
-    void update(OrderAggregate order);
+    void update(Order order);
 
-    Optional<OrderAggregate> findById(Long orderId);
+    Optional<Order> findById(Long orderId);
 
-    Optional<OrderAggregate> findByOrderNo(String orderNo);
+    Optional<Order> findByOrderNo(String orderNo);
 
     /**
      * 回滚普通订单库存（直接操作数据库）

@@ -9,7 +9,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.youyu.framework.cache.redis.RedisKeyBuilder;
 import com.youyu.common.exception.DomainException;
 import com.youyu.framework.cache.redis.RedisUtil;
-import com.youyu.seckill.domain.model.SeckillActivityAggregate;
+import com.youyu.seckill.domain.aggregate.SeckillActivity;
 import com.youyu.seckill.domain.repository.SeckillActivityRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +35,7 @@ public class SeckillStockDomainService {
      * 过期时间：10分钟
      * 最大容量：1000
      */
-    private final Cache<Long, SeckillActivityAggregate> activityLocalCache = Caffeine.newBuilder()
+    private final Cache<Long, SeckillActivity> activityLocalCache = Caffeine.newBuilder()
             .expireAfterWrite(10, TimeUnit.MINUTES)
             .maximumSize(1000)
             .build();
@@ -294,7 +294,7 @@ public class SeckillStockDomainService {
      *
      * @param activity 活动聚合根
      */
-    public void cacheActivity(SeckillActivityAggregate activity) {
+    public void cacheActivity(SeckillActivity activity) {
         Long productId = activity.getProductId();
         String activityKey = RedisKeyBuilder.Seckill.activity(productId);
         String activityJson = JSON.toJSONString(activity);
@@ -319,19 +319,19 @@ public class SeckillStockDomainService {
      * @param productId 商品ID
      * @return 活动聚合根，不存在返回 null
      */
-    public SeckillActivityAggregate getCachedActivity(Long productId) {
+    public SeckillActivity getCachedActivity(Long productId) {
         return activityLocalCache.get(productId,(k)->{// Caffeine 的 get 方法保证了缓存加载的原子性，避免并发场景下的缓存击穿
             // query from redis
             String activityKey = RedisKeyBuilder.Seckill.activity(productId);
             String activityJson = RedisUtil.opsForValue().get(activityKey);
             if (activityJson != null) {
-                SeckillActivityAggregate activity = JSON.parseObject(activityJson, SeckillActivityAggregate.class);
+                SeckillActivity activity = JSON.parseObject(activityJson, SeckillActivity.class);
                 if(activity != null){
                     return activity;
                 }
             }
             // query from db, 后续可以考虑分布式锁
-            SeckillActivityAggregate activity = activityRepository.findByProductId(productId);
+            SeckillActivity activity = activityRepository.findByProductId(productId);
             if (activity == null) {
                 log.warn("秒杀活动不存在，productId: {}", productId);
                 throw new IllegalArgumentException("秒杀活动不存在");

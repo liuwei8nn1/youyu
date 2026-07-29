@@ -3,7 +3,7 @@ package com.youyu.user.impl.infrastructure.persistence.repository;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.youyu.framework.datasource.mybatis.BaseRepositoryImpl;
 import com.youyu.framework.datasource.mybatis.SmartQueryWrapper;
-import com.youyu.user.impl.domain.model.Dept;
+import com.youyu.user.impl.domain.aggregate.Dept;
 import com.youyu.user.impl.domain.repository.DeptRepository;
 import com.youyu.user.impl.infrastructure.persistence.converter.DeptConverter;
 import com.youyu.user.impl.infrastructure.persistence.entity.DeptDO;

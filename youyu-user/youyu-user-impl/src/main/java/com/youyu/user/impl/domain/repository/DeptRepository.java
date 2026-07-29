@@ -1,6 +1,6 @@
 package com.youyu.user.impl.domain.repository;
 
-import com.youyu.user.impl.domain.model.Dept;
+import com.youyu.user.impl.domain.aggregate.Dept;
 
 import java.util.List;
 import java.util.Optional;

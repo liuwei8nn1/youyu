@@ -1,8 +1,9 @@
 package com.youyu.user.impl.domain.repository;
 
-import com.youyu.user.impl.domain.model.Customer;
 
 import java.util.Optional;
+
+import com.youyu.user.impl.domain.entity.Customer;
 
 /**
  * 外部顾客仓储接口

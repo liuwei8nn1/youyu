@@ -1,6 +1,6 @@
 package com.youyu.auth.infrastructure.persistence.repository;
 
-import com.youyu.auth.domain.model.UserRole;
+import com.youyu.auth.domain.entity.UserRole;
 import com.youyu.auth.domain.repository.UserRoleRepository;
 import com.youyu.auth.infrastructure.persistence.converter.UserRoleConverter;
 import com.youyu.auth.infrastructure.persistence.entity.UserRoleDO;

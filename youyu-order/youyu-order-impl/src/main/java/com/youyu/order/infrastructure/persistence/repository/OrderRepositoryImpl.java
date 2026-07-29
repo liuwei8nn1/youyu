@@ -2,7 +2,7 @@ package com.youyu.order.infrastructure.persistence.repository;
 
 import com.youyu.framework.datasource.mybatis.BaseRepositoryImpl;
 import com.youyu.framework.datasource.mybatis.SmartQueryWrapper;
-import com.youyu.order.domain.model.OrderAggregate;
+import com.youyu.order.domain.aggregate.Order;
 import com.youyu.order.domain.repository.OrderRepository;
 import com.youyu.order.infrastructure.persistence.converter.OrderConverter;
 import com.youyu.order.infrastructure.persistence.entity.OrderDO;
@@ -17,7 +17,7 @@ import java.util.Optional;
 public class OrderRepositoryImpl extends BaseRepositoryImpl<OrderDO, OrderMapper, Long> implements OrderRepository {
 
     @Override
-    public void save(OrderAggregate order) {
+    public void save(Order order) {
         OrderDO orderDO = OrderConverter.INSTANCE.toDO(order);
         if (orderDO.getId() == null) {
             baseDao.insert(orderDO);
@@ -30,20 +30,20 @@ public class OrderRepositoryImpl extends BaseRepositoryImpl<OrderDO, OrderMapper
     }
 
     @Override
-    public void update(OrderAggregate order) {
+    public void update(Order order) {
         OrderDO orderDO = OrderConverter.INSTANCE.toDO(order);
         baseDao.updateById(orderDO);
         log.info("订单更新成功，orderId: {}", orderDO.getId());
     }
 
     @Override
-    public Optional<OrderAggregate> findById(Long orderId) {
+    public Optional<Order> findById(Long orderId) {
         OrderDO orderDO = baseDao.selectById(orderId);
         return Optional.ofNullable(OrderConverter.INSTANCE.toAggregate(orderDO));
     }
 
     @Override
-    public Optional<OrderAggregate> findByOrderNo(String orderNo) {
+    public Optional<Order> findByOrderNo(String orderNo) {
         SmartQueryWrapper<OrderDO> wrapper = new SmartQueryWrapper<OrderDO>().eq(OrderDO.ORDER_NO, orderNo);
         OrderDO orderDO = baseDao.selectOne(wrapper);
         return Optional.ofNullable(OrderConverter.INSTANCE.toAggregate(orderDO));

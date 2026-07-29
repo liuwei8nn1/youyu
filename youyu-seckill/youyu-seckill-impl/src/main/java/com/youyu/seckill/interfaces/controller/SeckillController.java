@@ -6,7 +6,7 @@ import com.youyu.common.model.Result;
 import com.youyu.seckill.application.dto.SeckillOrderResponse;
 import com.youyu.seckill.application.service.SeckillActivityApplicationService;
 import com.youyu.seckill.application.service.SeckillOrderApplicationService;
-import com.youyu.seckill.domain.model.SeckillActivityAggregate;
+import com.youyu.seckill.domain.aggregate.SeckillActivity;
 import com.youyu.seckill.domain.repository.SeckillActivityRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,9 +31,9 @@ public class SeckillController {
      * 查询所有秒杀活动
      */
     @GetMapping("/list")
-    public Result<List<SeckillActivityAggregate>> listAll() {
+    public Result<List<SeckillActivity>> listAll() {
         try {
-            List<SeckillActivityAggregate> activities = activityRepository.listAll();
+            List<SeckillActivity> activities = activityRepository.listAll();
             return Result.success(activities);
         } catch (Exception e) {
             log.error("查询秒杀活动列表失败", e);
@@ -45,12 +45,12 @@ public class SeckillController {
      * 查询秒杀活动详情
      */
     @GetMapping("/detail/{id}")
-    public Result<SeckillActivityAggregate> getById(@PathVariable Long id) {
+    public Result<SeckillActivity> getById(@PathVariable Long id) {
         try {
             if (id == null || id <= 0) {
                 return Result.error("活动ID无效");
             }
-            SeckillActivityAggregate activity = activityRepository.findById(id);
+            SeckillActivity activity = activityRepository.findById(id);
             if (activity == null) {
                 return Result.error("活动不存在");
             }
@@ -65,7 +65,7 @@ public class SeckillController {
      * 创建秒杀活动
      */
     @PostMapping("/save")
-    public Result<Void> save(@RequestBody SeckillActivityAggregate activity) {
+    public Result<Void> save(@RequestBody SeckillActivity activity) {
         try {
             // 参数校验
             if (activity == null) {
@@ -90,7 +90,7 @@ public class SeckillController {
      * 更新秒杀活动
      */
     @PutMapping("/update")
-    public Result<Void> update(@RequestBody SeckillActivityAggregate activity) {
+    public Result<Void> update(@RequestBody SeckillActivity activity) {
         try {
             // 参数校验
             if (activity == null || activity.getId() == null) {

@@ -1,6 +1,6 @@
 package com.youyu.auth.domain.repository;
 
-import com.youyu.auth.domain.model.UserRole;
+import com.youyu.auth.domain.entity.UserRole;
 
 import java.util.List;
 import java.util.Optional;

@@ -2,7 +2,7 @@ package com.youyu.user.impl.infrastructure.persistence.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.youyu.user.impl.domain.model.Address;
+import com.youyu.user.impl.domain.entity.Address;
 import com.youyu.user.impl.domain.repository.AddressRepository;
 import com.youyu.user.impl.infrastructure.persistence.entity.AddressDO;
 import com.youyu.user.impl.infrastructure.persistence.mapper.AddressMapper;

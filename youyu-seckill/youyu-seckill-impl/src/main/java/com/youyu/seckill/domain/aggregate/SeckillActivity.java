@@ -1,4 +1,4 @@
-package com.youyu.seckill.domain.model;
+package com.youyu.seckill.domain.aggregate;
 
 import lombok.Getter;
 
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
  * 3. 提供活动状态判断方法
  */
 @Getter
-public class SeckillActivityAggregate implements Serializable {
+public class SeckillActivity implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -77,12 +77,12 @@ public class SeckillActivityAggregate implements Serializable {
     /**
      * 无参构造函数（供 MapStruct 使用）
      */
-    public SeckillActivityAggregate() {
+    public SeckillActivity() {
     }
 
-    private SeckillActivityAggregate(Long id, Long productId, LocalDateTime startTime,
-                                      LocalDateTime endTime, Integer stock, Integer limitPerUser,
-                                      LocalDateTime createTime, LocalDateTime updateTime) {
+    private SeckillActivity(Long id, Long productId, LocalDateTime startTime,
+                            LocalDateTime endTime, Integer stock, Integer limitPerUser,
+                            LocalDateTime createTime, LocalDateTime updateTime) {
         this.id = id;
         this.productId = productId;
         this.startTime = startTime;
@@ -104,10 +104,10 @@ public class SeckillActivityAggregate implements Serializable {
      * @param seckillPrice 秒杀价格
      * @return 秒杀活动聚合根
      */
-    public static SeckillActivityAggregate create(Long productId, LocalDateTime startTime,
-                                                    LocalDateTime endTime, Integer stock,
-                                                    Integer limitPerUser, BigDecimal seckillPrice) {
-        SeckillActivityAggregate activity = new SeckillActivityAggregate();
+    public static SeckillActivity create(Long productId, LocalDateTime startTime,
+                                                                        LocalDateTime endTime, Integer stock,
+                                                                        Integer limitPerUser, BigDecimal seckillPrice) {
+        SeckillActivity activity = new SeckillActivity();
         activity.productId = productId;
         activity.startTime = startTime;
         activity.endTime = endTime;
@@ -122,12 +122,12 @@ public class SeckillActivityAggregate implements Serializable {
     /**
      * 从数据库恢复活动（用于查询）
      */
-    public static SeckillActivityAggregate restore(Long id, Long productId, LocalDateTime startTime,
-                                                     LocalDateTime endTime, Integer stock,
-                                                     Integer limitPerUser, BigDecimal seckillPrice,
-                                                     LocalDateTime createTime,
-                                                     LocalDateTime updateTime) {
-        SeckillActivityAggregate activity = new SeckillActivityAggregate();
+    public static SeckillActivity restore(Long id, Long productId, LocalDateTime startTime,
+                                                                         LocalDateTime endTime, Integer stock,
+                                                                         Integer limitPerUser, BigDecimal seckillPrice,
+                                                                         LocalDateTime createTime,
+                                                                         LocalDateTime updateTime) {
+        SeckillActivity activity = new SeckillActivity();
         activity.id = id;
         activity.productId = productId;
         activity.startTime = startTime;

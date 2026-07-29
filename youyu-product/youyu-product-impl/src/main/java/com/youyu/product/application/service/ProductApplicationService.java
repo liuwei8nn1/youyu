@@ -1,22 +1,16 @@
 package com.youyu.product.application.service;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import com.youyu.product.api.dto.ProductDetailDTO;
-import com.youyu.product.domain.model.CategoryAggregate;
-import com.youyu.product.domain.model.PriceHistory;
-import com.youyu.product.domain.model.ProductAggregate;
-import com.youyu.product.domain.model.StockFlow;
-import com.youyu.product.domain.repository.CategoryRepository;
-import com.youyu.product.domain.repository.PriceHistoryRepository;
-import com.youyu.product.domain.repository.ProductRepository;
-import com.youyu.product.domain.repository.StockFlowRepository;
+import com.youyu.product.domain.aggregate.*;
+import com.youyu.product.domain.repository.*;
 import com.youyu.product.domain.service.ProductDomainService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -29,13 +23,13 @@ public class ProductApplicationService {
     private final PriceHistoryRepository priceHistoryRepository;
     private final StockFlowRepository stockFlowRepository;
 
-    public ProductAggregate getProduct(Long productId) {
+    public Product getProduct(Long productId) {
         return productRepository.findById(productId)
             .orElseThrow(() -> new RuntimeException("商品不存在，productId: " + productId));
     }
 
     public boolean isSeckillProduct(Long productId) {
-        ProductAggregate product = getProduct(productId);
+        Product product = getProduct(productId);
         return product.isInSeckillPeriod();
     }
 
@@ -51,7 +45,7 @@ public class ProductApplicationService {
     public Long createProduct(String productName, String description, BigDecimal price, Long stock) {
         log.info("开始创建商品，productName: {}", productName);
 
-        ProductAggregate product = ProductAggregate.create(productName, description, price, stock);
+        Product product = Product.create(productName, description, price, stock);
         product.validate();
         productRepository.save(product);
 
@@ -63,7 +57,7 @@ public class ProductApplicationService {
     public void updateProduct(Long productId, String productName, String description, BigDecimal price) {
         log.info("开始更新商品，productId: {}", productId);
 
-        ProductAggregate product = productRepository.findById(productId)
+        Product product = productRepository.findById(productId)
             .orElseThrow(() -> new RuntimeException("商品不存在，productId: " + productId));
 
         if (price != null && !price.equals(product.getPrice())) {
@@ -83,7 +77,7 @@ public class ProductApplicationService {
     public void putOnShelf(Long productId) {
         log.info("开始上架商品，productId: {}", productId);
 
-        ProductAggregate product = productRepository.findById(productId)
+        Product product = productRepository.findById(productId)
             .orElseThrow(() -> new RuntimeException("商品不存在，productId: " + productId));
 
         product.putOnShelf();
@@ -96,7 +90,7 @@ public class ProductApplicationService {
     public void takeOffShelf(Long productId) {
         log.info("开始下架商品，productId: {}", productId);
 
-        ProductAggregate product = productRepository.findById(productId)
+        Product product = productRepository.findById(productId)
             .orElseThrow(() -> new RuntimeException("商品不存在，productId: " + productId));
 
         product.takeOffShelf();
@@ -109,7 +103,7 @@ public class ProductApplicationService {
     public void deleteProduct(Long productId) {
         log.info("开始删除商品，productId: {}", productId);
 
-        ProductAggregate product = productRepository.findById(productId)
+        Product product = productRepository.findById(productId)
             .orElseThrow(() -> new RuntimeException("商品不存在，productId: " + productId));
 
         product.markAsDeleted();
@@ -122,11 +116,11 @@ public class ProductApplicationService {
     public Long createCategory(String categoryName, Long parentId, Integer level, Integer sortOrder) {
         log.info("开始创建商品分类，categoryName: {}, parentId: {}", categoryName, parentId);
 
-        CategoryAggregate category;
+        Category category;
         if (parentId == null || parentId == 0) {
-            category = CategoryAggregate.createRoot(categoryName, sortOrder);
+            category = Category.createRoot(categoryName, sortOrder);
         } else {
-            category = CategoryAggregate.createChild(categoryName, parentId, level, sortOrder);
+            category = Category.createChild(categoryName, parentId, level, sortOrder);
         }
 
         category.validate();
@@ -136,7 +130,7 @@ public class ProductApplicationService {
         return category.getId();
     }
 
-    public List<CategoryAggregate> getCategoryTree() {
+    public List<Category> getCategoryTree() {
         return categoryRepository.findCategoryTree();
     }
 
@@ -156,8 +150,8 @@ public class ProductApplicationService {
      */
     public ProductDetailDTO getProductDetail(Long productId) {
         log.info("查询商品详情，productId: {}", productId);
-        
-        ProductAggregate product = productRepository.findById(productId)
+
+        Product product = productRepository.findById(productId)
             .orElseThrow(() -> new RuntimeException("商品不存在，productId: " + productId));
         
         // 检查商品是否已删除

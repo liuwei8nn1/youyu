@@ -3,7 +3,7 @@ package com.youyu.seckill.infrastructure.persistence.repository;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.youyu.framework.datasource.mybatis.BaseRepositoryImpl;
 import com.youyu.framework.datasource.mybatis.SmartQueryWrapper;
-import com.youyu.seckill.domain.model.SeckillActivityAggregate;
+import com.youyu.seckill.domain.aggregate.SeckillActivity;
 import com.youyu.seckill.domain.repository.SeckillActivityRepository;
 import com.youyu.seckill.infrastructure.persistence.converter.SeckillActivityConverter;
 import com.youyu.seckill.infrastructure.persistence.entity.SeckillActivityDO;
@@ -20,13 +20,13 @@ import java.util.stream.Collectors;
 public class SeckillActivityRepositoryImpl extends BaseRepositoryImpl<SeckillActivityDO, SeckillActivityMapper, Long> implements SeckillActivityRepository {
 
     @Override
-    public SeckillActivityAggregate findById(Long id) {
+    public SeckillActivity findById(Long id) {
         SeckillActivityDO activityDO = baseDao.selectById(id);
         return activityDO != null ? SeckillActivityConverter.INSTANCE.toDomain(activityDO) : null;
     }
 
     @Override
-    public SeckillActivityAggregate findByProductId(Long productId) {
+    public SeckillActivity findByProductId(Long productId) {
         SmartQueryWrapper<SeckillActivityDO> wrapper = new SmartQueryWrapper<SeckillActivityDO>()
                 .eq(SeckillActivityDO.PRODUCT_ID, productId);
         SeckillActivityDO activityDO = baseDao.selectOne(wrapper);
@@ -34,7 +34,7 @@ public class SeckillActivityRepositoryImpl extends BaseRepositoryImpl<SeckillAct
     }
 
     @Override
-    public List<SeckillActivityAggregate> listAll() {
+    public List<SeckillActivity> listAll() {
         List<SeckillActivityDO> activityDOList = baseDao.selectList(new QueryWrapper<>());
         return activityDOList.stream()
                 .map(SeckillActivityConverter.INSTANCE::toDomain)
@@ -42,14 +42,14 @@ public class SeckillActivityRepositoryImpl extends BaseRepositoryImpl<SeckillAct
     }
 
     @Override
-    public void save(SeckillActivityAggregate activity) {
+    public void save(SeckillActivity activity) {
         SeckillActivityDO activityDO = SeckillActivityConverter.INSTANCE.toDO(activity);
         baseDao.insert(activityDO);
         activity.setId(activityDO.getId());
     }
 
     @Override
-    public void update(SeckillActivityAggregate activity) {
+    public void update(SeckillActivity activity) {
         SeckillActivityDO activityDO = SeckillActivityConverter.INSTANCE.toDO(activity);
         baseDao.updateById(activityDO);
     }

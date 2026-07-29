@@ -1,6 +1,6 @@
 package com.youyu.auth.infrastructure.persistence.converter;
 
-import com.youyu.auth.domain.model.UserDevice;
+import com.youyu.auth.domain.aggregate.UserDevice;
 import com.youyu.auth.infrastructure.persistence.entity.UserDeviceDO;
 
 /**

@@ -1,23 +1,23 @@
 package com.youyu.product.infrastructure.persistence.converter;
 
-import com.youyu.product.domain.model.ProductAggregate;
+import java.math.BigDecimal;
+
+import com.youyu.product.domain.aggregate.Product;
 import com.youyu.product.infrastructure.persistence.entity.ProductDO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
-
-import java.math.BigDecimal;
 
 @Mapper
 public interface ProductConverter {
 
     ProductConverter INSTANCE = Mappers.getMapper(ProductConverter.class);
 
-    default ProductAggregate toAggregate(ProductDO productDO) {
+    default Product toProduct(ProductDO productDO) {
         if (productDO == null) {
             return null;
         }
-        return ProductAggregate.restore(
+        return Product.restore(
             productDO.getId(),
             productDO.getProductName(),
             productDO.getDescription(),
@@ -31,5 +31,5 @@ public interface ProductConverter {
     }
 
     @Mapping(target = "deletedAt", ignore = true)
-    ProductDO toDO(ProductAggregate aggregate);
+    ProductDO toDO(Product product);
 }

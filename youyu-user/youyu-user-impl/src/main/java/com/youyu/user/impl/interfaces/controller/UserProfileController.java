@@ -2,8 +2,8 @@ package com.youyu.user.impl.interfaces.controller;
 
 import com.youyu.common.model.Result;
 import com.youyu.user.impl.application.service.UserProfileApplicationService;
-import com.youyu.user.impl.domain.model.Address;
-import com.youyu.user.impl.domain.model.UserProfile;
+import com.youyu.user.impl.domain.entity.Address;
+import com.youyu.user.impl.domain.aggregate.UserProfile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

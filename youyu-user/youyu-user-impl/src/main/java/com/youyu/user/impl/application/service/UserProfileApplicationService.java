@@ -2,7 +2,9 @@ package com.youyu.user.impl.application.service;
 
 import com.youyu.framework.context.UserType;
 import com.youyu.user.api.dto.UserProfileCreateRequest;
-import com.youyu.user.impl.domain.model.*;
+import com.youyu.user.impl.domain.aggregate.UserProfile;
+import com.youyu.user.impl.domain.entity.Address;
+import com.youyu.user.impl.domain.entity.*;
 import com.youyu.user.impl.domain.repository.AddressRepository;
 import com.youyu.user.impl.domain.repository.CustomerRepository;
 import com.youyu.user.impl.domain.repository.EmployeeRepository;

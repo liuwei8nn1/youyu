@@ -1,6 +1,6 @@
 package com.youyu.user.impl.application.service;
 
-import com.youyu.user.impl.domain.model.Dept;
+import com.youyu.user.impl.domain.aggregate.Dept;
 import com.youyu.user.impl.domain.repository.DeptRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

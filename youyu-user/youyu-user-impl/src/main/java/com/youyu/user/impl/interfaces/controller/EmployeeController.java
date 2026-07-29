@@ -6,7 +6,7 @@ import com.youyu.framework.context.web.resolver.ProxyRequest;
 import com.youyu.user.impl.application.service.EmployeeApplicationService;
 import com.youyu.user.impl.application.service.EmployeeApplicationService.CreateEmployeeRequest;
 import com.youyu.user.impl.application.service.EmployeeApplicationService.UpdateEmployeeRequest;
-import com.youyu.user.impl.domain.model.Employee;
+import com.youyu.user.impl.domain.entity.Employee;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;

@@ -1,4 +1,4 @@
-package com.youyu.product.domain.model;
+package com.youyu.product.domain.aggregate;
 
 import lombok.Getter;
 
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public class CategoryAggregate implements Serializable {
+public class Category implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -25,13 +25,13 @@ public class CategoryAggregate implements Serializable {
     private Integer level;
     private Integer sortOrder;
     private Integer status;
-    private List<CategoryAggregate> children = new ArrayList<>();
+    private List<Category> children = new ArrayList<>();
 
-    public CategoryAggregate() {
+    public Category() {
     }
 
-    public static CategoryAggregate createRoot(String categoryName, Integer sortOrder) {
-        CategoryAggregate category = new CategoryAggregate();
+    public static Category createRoot(String categoryName, Integer sortOrder) {
+        Category category = new Category();
         category.categoryName = categoryName;
         category.parentId = 0L;
         category.level = 1;
@@ -40,8 +40,8 @@ public class CategoryAggregate implements Serializable {
         return category;
     }
 
-    public static CategoryAggregate createChild(String categoryName, Long parentId,
-                                                Integer level, Integer sortOrder) {
+    public static Category createChild(String categoryName, Long parentId,
+                                                                      Integer level, Integer sortOrder) {
         if (parentId == null || parentId <= 0) {
             throw new IllegalArgumentException("父分类ID必须大于0");
         }
@@ -49,7 +49,7 @@ public class CategoryAggregate implements Serializable {
             throw new IllegalArgumentException("子分类层级必须大于1");
         }
 
-        CategoryAggregate category = new CategoryAggregate();
+        Category category = new Category();
         category.categoryName = categoryName;
         category.parentId = parentId;
         category.level = level;
@@ -58,9 +58,9 @@ public class CategoryAggregate implements Serializable {
         return category;
     }
 
-    public static CategoryAggregate restore(Long id, String categoryName, Long parentId,
-                                           Integer level, Integer sortOrder, Integer status) {
-        CategoryAggregate category = new CategoryAggregate();
+    public static Category restore(Long id, String categoryName, Long parentId,
+                                                                  Integer level, Integer sortOrder, Integer status) {
+        Category category = new Category();
         category.id = id;
         category.categoryName = categoryName;
         category.parentId = parentId != null ? parentId : 0L;
@@ -104,7 +104,7 @@ public class CategoryAggregate implements Serializable {
         return this.parentId != null && this.parentId == 0;
     }
 
-    public void addChild(CategoryAggregate child) {
+    public void addChild(Category child) {
         if (child == null) {
             throw new IllegalArgumentException("子分类不能为空");
         }

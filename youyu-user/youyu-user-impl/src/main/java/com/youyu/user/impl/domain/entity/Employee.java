@@ -1,4 +1,4 @@
-package com.youyu.user.impl.domain.model;
+package com.youyu.user.impl.domain.entity;
 
 import com.youyu.framework.datasource.mybatis.BaseDO;
 import lombok.Getter;

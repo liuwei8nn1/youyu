@@ -1,4 +1,4 @@
-package com.youyu.product.domain.model;
+package com.youyu.product.domain.aggregate;
 
 import lombok.Getter;
 
@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
-public class ProductAggregate implements Serializable {
+public class Product implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -29,11 +29,11 @@ public class ProductAggregate implements Serializable {
     private LocalDateTime seckillStartTime;
     private LocalDateTime seckillEndTime;
 
-    public ProductAggregate() {
+    public Product() {
     }
 
-    public static ProductAggregate create(String productName, String description, BigDecimal price, Long stock) {
-        ProductAggregate product = new ProductAggregate();
+    public static Product create(String productName, String description, BigDecimal price, Long stock) {
+        Product product = new Product();
         product.productName = productName;
         product.description = description;
         product.price = price;
@@ -43,10 +43,10 @@ public class ProductAggregate implements Serializable {
         return product;
     }
 
-    public static ProductAggregate createSeckillProduct(String productName, String description,
-                                                        BigDecimal price, Long stock,
-                                                        LocalDateTime startTime, LocalDateTime endTime) {
-        ProductAggregate product = new ProductAggregate();
+    public static Product createSeckillProduct(String productName, String description,
+                                               BigDecimal price, Long stock,
+                                               LocalDateTime startTime, LocalDateTime endTime) {
+        Product product = new Product();
         product.productName = productName;
         product.description = description;
         product.price = price;
@@ -58,11 +58,11 @@ public class ProductAggregate implements Serializable {
         return product;
     }
 
-    public static ProductAggregate restore(Long id, String productName, String description,
-                                           BigDecimal price, Long stock, Integer status,
-                                           Boolean isSeckill, LocalDateTime seckillStartTime,
-                                           LocalDateTime seckillEndTime) {
-        ProductAggregate product = new ProductAggregate();
+    public static Product restore(Long id, String productName, String description,
+                                  BigDecimal price, Long stock, Integer status,
+                                  Boolean isSeckill, LocalDateTime seckillStartTime,
+                                  LocalDateTime seckillEndTime) {
+        Product product = new Product();
         product.id = id;
         product.productName = productName;
         product.description = description;

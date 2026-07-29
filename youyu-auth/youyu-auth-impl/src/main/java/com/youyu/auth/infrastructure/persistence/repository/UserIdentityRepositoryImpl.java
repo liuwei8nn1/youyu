@@ -1,7 +1,8 @@
 package com.youyu.auth.infrastructure.persistence.repository;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.youyu.auth.domain.model.UserIdentity;
+import java.util.Optional;
+
+import com.youyu.auth.domain.aggregate.UserIdentity;
 import com.youyu.auth.domain.repository.UserIdentityRepository;
 import com.youyu.auth.infrastructure.persistence.converter.UserIdentityConverter;
 import com.youyu.auth.infrastructure.persistence.entity.UserIdentityDO;
@@ -9,8 +10,6 @@ import com.youyu.auth.infrastructure.persistence.mapper.UserIdentityMapper;
 import com.youyu.framework.datasource.mybatis.BaseRepositoryImpl;
 import com.youyu.framework.datasource.mybatis.SmartQueryWrapper;
 import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
 
 /**
  * 用户身份仓储实现

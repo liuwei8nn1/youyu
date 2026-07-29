@@ -2,7 +2,7 @@ package com.youyu.product.infrastructure.persistence.repository;
 
 import com.youyu.framework.datasource.mybatis.BaseRepositoryImpl;
 import com.youyu.framework.datasource.mybatis.SmartQueryWrapper;
-import com.youyu.product.domain.model.CategoryAggregate;
+import com.youyu.product.domain.aggregate.Category;
 import com.youyu.product.domain.repository.CategoryRepository;
 import com.youyu.product.infrastructure.persistence.converter.CategoryConverter;
 import com.youyu.product.infrastructure.persistence.entity.CategoryDO;
@@ -19,7 +19,7 @@ import java.util.Optional;
 public class CategoryRepositoryImpl extends BaseRepositoryImpl<CategoryDO, CategoryMapper, Long> implements CategoryRepository {
 
     @Override
-    public void save(CategoryAggregate category) {
+    public void save(Category category) {
         CategoryDO categoryDO = CategoryConverter.INSTANCE.toDO(category);
         if (categoryDO.getId() == null) {
             baseDao.insert(categoryDO);
@@ -32,25 +32,25 @@ public class CategoryRepositoryImpl extends BaseRepositoryImpl<CategoryDO, Categ
     }
 
     @Override
-    public Optional<CategoryAggregate> findById(Long categoryId) {
+    public Optional<Category> findById(Long categoryId) {
         CategoryDO categoryDO = baseDao.selectById(categoryId);
         return Optional.ofNullable(CategoryConverter.INSTANCE.toAggregate(categoryDO));
     }
 
     @Override
-    public void update(CategoryAggregate category) {
+    public void update(Category category) {
         CategoryDO categoryDO = CategoryConverter.INSTANCE.toDO(category);
         baseDao.updateById(categoryDO);
         log.info("分类更新成功，categoryId: {}", categoryDO.getId());
     }
 
     @Override
-    public List<CategoryAggregate> findRootCategories() {
+    public List<Category> findRootCategories() {
         SmartQueryWrapper<CategoryDO> wrapper = new SmartQueryWrapper<CategoryDO>()
                 .eq(CategoryDO.PARENT_ID, 0L)
                 .orderByAsc(CategoryDO.SORT_ORDER);
         List<CategoryDO> doList = baseDao.selectList(wrapper);
-        List<CategoryAggregate> result = new ArrayList<>();
+        List<Category> result = new ArrayList<>();
         for (CategoryDO categoryDO : doList) {
             result.add(CategoryConverter.INSTANCE.toAggregate(categoryDO));
         }
@@ -58,12 +58,12 @@ public class CategoryRepositoryImpl extends BaseRepositoryImpl<CategoryDO, Categ
     }
 
     @Override
-    public List<CategoryAggregate> findByParentId(Long parentId) {
+    public List<Category> findByParentId(Long parentId) {
         SmartQueryWrapper<CategoryDO> wrapper = new SmartQueryWrapper<CategoryDO>()
                 .eq(CategoryDO.PARENT_ID, parentId)
                 .orderByAsc(CategoryDO.SORT_ORDER);
         List<CategoryDO> doList = baseDao.selectList(wrapper);
-        List<CategoryAggregate> result = new ArrayList<>();
+        List<Category> result = new ArrayList<>();
         for (CategoryDO categoryDO : doList) {
             result.add(CategoryConverter.INSTANCE.toAggregate(categoryDO));
         }
@@ -71,15 +71,15 @@ public class CategoryRepositoryImpl extends BaseRepositoryImpl<CategoryDO, Categ
     }
 
     @Override
-    public List<CategoryAggregate> findCategoryTree() {
-        List<CategoryAggregate> roots = findRootCategories();
+    public List<Category> findCategoryTree() {
+        List<Category> roots = findRootCategories();
         buildTree(roots);
         return roots;
     }
 
-    private void buildTree(List<CategoryAggregate> parents) {
-        for (CategoryAggregate parent : parents) {
-            List<CategoryAggregate> children = findByParentId(parent.getId());
+    private void buildTree(List<Category> parents) {
+        for (Category parent : parents) {
+            List<Category> children = findByParentId(parent.getId());
             if (!children.isEmpty()) {
                 parent.getChildren().addAll(children);
                 buildTree(children);

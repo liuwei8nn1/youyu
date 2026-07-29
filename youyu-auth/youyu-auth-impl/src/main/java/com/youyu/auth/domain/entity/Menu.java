@@ -1,4 +1,4 @@
-package com.youyu.auth.domain.model;
+package com.youyu.auth.domain.entity;
 
 import java.util.ArrayList;
 import java.util.List;

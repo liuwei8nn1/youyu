@@ -2,7 +2,7 @@ package com.youyu.order.infrastructure.external.adapter;
 
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.youyu.common.model.Result;
-import com.youyu.order.domain.model.ShippingAddress;
+import com.youyu.order.domain.valueobject.ShippingAddress;
 import com.youyu.order.domain.repository.UserRepository;
 import com.youyu.user.api.client.UserFeignClient;
 import com.youyu.user.api.dto.AddressDTO;

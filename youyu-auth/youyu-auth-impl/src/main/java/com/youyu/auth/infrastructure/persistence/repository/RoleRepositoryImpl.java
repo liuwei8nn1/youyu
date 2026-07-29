@@ -1,7 +1,7 @@
 package com.youyu.auth.infrastructure.persistence.repository;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.youyu.auth.domain.model.Role;
+import com.youyu.auth.domain.aggregate.Role;
 import com.youyu.auth.domain.repository.RoleRepository;
 import com.youyu.auth.infrastructure.external.adapter.UserServiceAdapter;
 import com.youyu.auth.infrastructure.persistence.converter.RoleConverter;

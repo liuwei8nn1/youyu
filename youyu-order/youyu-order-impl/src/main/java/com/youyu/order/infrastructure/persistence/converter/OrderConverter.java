@@ -1,6 +1,6 @@
 package com.youyu.order.infrastructure.persistence.converter;
 
-import com.youyu.order.domain.model.OrderAggregate;
+import com.youyu.order.domain.aggregate.Order;
 import com.youyu.order.infrastructure.persistence.entity.OrderDO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -10,20 +10,20 @@ public interface OrderConverter {
 
     OrderConverter INSTANCE = Mappers.getMapper(OrderConverter.class);
 
-    default OrderAggregate toAggregate(OrderDO orderDO) {
+    default Order toAggregate(OrderDO orderDO) {
         if (orderDO == null) {
             return null;
         }
         // 注意：OrderDO 中缺少 orderType, activityId, payExpireTime 字段
         // 这里使用默认值，实际应该从数据库查询这些字段
-        return OrderAggregate.restore(
+        return Order.restore(
             orderDO.getId(),
             orderDO.getOrderNo(),
             orderDO.getUserId(),
             orderDO.getProductId(),
             orderDO.getQuantity(),
             orderDO.getAmount(),
-            OrderAggregate.ORDER_TYPE_NORMAL, // 默认为普通订单
+            Order.ORDER_TYPE_NORMAL, // 默认为普通订单
             null, // activityId
             null, // payExpireTime
             orderDO.getStatus(),
@@ -32,5 +32,5 @@ public interface OrderConverter {
         );
     }
 
-    OrderDO toDO(OrderAggregate aggregate);
+    OrderDO toDO(Order aggregate);
 }

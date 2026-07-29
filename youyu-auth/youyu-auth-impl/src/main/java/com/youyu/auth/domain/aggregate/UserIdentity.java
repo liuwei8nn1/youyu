@@ -1,4 +1,4 @@
-package com.youyu.auth.domain.model;
+package com.youyu.auth.domain.aggregate;
 
 import com.youyu.common.util.PasswordUtil;
 import com.youyu.framework.context.UserType;

@@ -2,7 +2,7 @@ package com.youyu.user.impl.infrastructure.persistence.repository;
 
 import com.youyu.framework.datasource.mybatis.BaseRepositoryImpl;
 import com.youyu.framework.datasource.mybatis.SmartQueryWrapper;
-import com.youyu.user.impl.domain.model.PlatformUser;
+import com.youyu.user.impl.domain.entity.PlatformUser;
 import com.youyu.user.impl.domain.repository.PlatformUserRepository;
 import com.youyu.user.impl.infrastructure.persistence.converter.PlatformUserConverter;
 import com.youyu.user.impl.infrastructure.persistence.entity.PlatformUserDO;

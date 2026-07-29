@@ -1,18 +1,17 @@
 package com.youyu.product.domain.service;
 
+import java.util.Collections;
+import java.util.List;
 
+import com.youyu.common.constant.BaseI18nKey;
 import com.youyu.framework.cache.redis.RedisKeyBuilder;
 import com.youyu.framework.cache.redis.RedisUtil;
 import com.youyu.framework.context.I18N;
-import com.youyu.common.constant.BaseI18nKey;
-import com.youyu.product.domain.model.ProductAggregate;
+import com.youyu.product.domain.aggregate.Product;
 import com.youyu.product.domain.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -78,7 +77,7 @@ public class ProductDomainService {
     public void deductStockFromDatabase(Long productId, Integer quantity) {
         log.info("开始数据库扣减库存，productId: {}, quantity: {}", productId, quantity);
 
-        ProductAggregate product = productRepository.findById(productId)
+        Product product = productRepository.findById(productId)
             .orElseThrow(() -> new RuntimeException(I18N.msg(BaseI18nKey.PRODUCT_NOT_FOUND)));
 
         if (!product.isStockSufficient(quantity)) {

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import com.youyu.common.model.Result;
 import com.youyu.seckill.application.dto.SeckillOrderResponse;
-import com.youyu.seckill.domain.model.SeckillActivityAggregate;
+import com.youyu.seckill.domain.aggregate.SeckillActivity;
 import com.youyu.seckill.domain.service.SeckillStockDomainService;
 import com.youyu.seckill.infrastructure.messaging.SeckillOrderMessageProducer;
 import jakarta.annotation.Resource;
@@ -66,7 +66,7 @@ public class SeckillOrderApplicationService {
         }
 
         // 2. 获取活动并校验时间
-        SeckillActivityAggregate activity = stockDomainService.getCachedActivity(productId);
+        SeckillActivity activity = stockDomainService.getCachedActivity(productId);
         activity.assertActive();
 
         // 3. 获取秒杀价格（聚合根自校验）

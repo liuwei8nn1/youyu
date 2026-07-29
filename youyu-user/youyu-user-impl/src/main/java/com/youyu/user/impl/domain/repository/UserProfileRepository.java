@@ -1,6 +1,6 @@
 package com.youyu.user.impl.domain.repository;
 
-import com.youyu.user.impl.domain.model.UserProfile;
+import com.youyu.user.impl.domain.aggregate.UserProfile;
 
 import java.util.Optional;
 

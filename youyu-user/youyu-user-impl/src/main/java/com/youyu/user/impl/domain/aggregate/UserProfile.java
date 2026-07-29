@@ -1,4 +1,4 @@
-package com.youyu.user.impl.domain.model;
+package com.youyu.user.impl.domain.aggregate;
 
 import lombok.Getter;
 

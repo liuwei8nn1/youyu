@@ -2,7 +2,7 @@ package com.youyu.order.interfaces.controller;
 
 import com.youyu.common.model.Result;
 import com.youyu.order.application.service.OrderApplicationService;
-import com.youyu.order.domain.model.OrderAggregate;
+import com.youyu.order.domain.aggregate.Order;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -28,14 +28,14 @@ public class OrderController {
      * @return 订单信息
      */
     @PostMapping("/create")
-    public Result<OrderAggregate> createOrder(@RequestParam Long userId,
-                                               @RequestParam Long productId,
-                                               @RequestParam Integer quantity) {
+    public Result<Order> createOrder(@RequestParam Long userId,
+                                     @RequestParam Long productId,
+                                     @RequestParam Integer quantity) {
         log.info("收到普通订单创建请求，userId: {}, productId: {}, quantity: {}", 
             userId, productId, quantity);
         
         try {
-            OrderAggregate order = orderApplicationService.createOrder(userId, productId, quantity);
+            Order order = orderApplicationService.createOrder(userId, productId, quantity);
             log.info("普通订单创建成功，orderId: {}, orderNo: {}", order.getId(), order.getOrderNo());
             return Result.success(order);
         } catch (Exception e) {
@@ -51,11 +51,11 @@ public class OrderController {
      * @return 订单信息
      */
     @GetMapping("/{orderId}")
-    public Result<OrderAggregate> getOrderById(@PathVariable Long orderId) {
+    public Result<Order> getOrderById(@PathVariable Long orderId) {
         log.debug("查询订单，orderId: {}", orderId);
         
         try {
-            OrderAggregate order = orderApplicationService.getOrderById(orderId);
+            Order order = orderApplicationService.getOrderById(orderId);
             return Result.success(order);
         } catch (Exception e) {
             log.error("查询订单失败，orderId: {}", orderId, e);
@@ -70,11 +70,11 @@ public class OrderController {
      * @return 订单信息
      */
     @GetMapping("/no/{orderNo}")
-    public Result<OrderAggregate> getOrderByOrderNo(@PathVariable String orderNo) {
+    public Result<Order> getOrderByOrderNo(@PathVariable String orderNo) {
         log.debug("查询订单，orderNo: {}", orderNo);
         
         try {
-            OrderAggregate order = orderApplicationService.getOrderByOrderNo(orderNo);
+            Order order = orderApplicationService.getOrderByOrderNo(orderNo);
             return Result.success(order);
         } catch (Exception e) {
             log.error("查询订单失败，orderNo: {}", orderNo, e);

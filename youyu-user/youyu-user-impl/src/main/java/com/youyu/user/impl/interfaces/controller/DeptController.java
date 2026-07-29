@@ -2,7 +2,7 @@ package com.youyu.user.impl.interfaces.controller;
 
 import com.youyu.common.model.Result;
 import com.youyu.user.impl.application.service.DeptApplicationService;
-import com.youyu.user.impl.domain.model.Dept;
+import com.youyu.user.impl.domain.aggregate.Dept;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

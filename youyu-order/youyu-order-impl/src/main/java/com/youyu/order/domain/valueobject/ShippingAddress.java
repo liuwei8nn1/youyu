@@ -1,4 +1,4 @@
-package com.youyu.order.domain.model;
+package com.youyu.order.domain.valueobject;
 
 import lombok.Getter;
 

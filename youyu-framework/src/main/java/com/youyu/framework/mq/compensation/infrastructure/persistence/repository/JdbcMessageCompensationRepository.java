@@ -1,6 +1,6 @@
 package com.youyu.framework.mq.compensation.infrastructure.persistence.repository;
 
-import com.youyu.framework.mq.compensation.domain.model.MessageCompensationRecord;
+import com.youyu.framework.mq.compensation.domain.entity.MessageCompensationRecord;
 import com.youyu.framework.mq.compensation.domain.repository.MessageCompensationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;

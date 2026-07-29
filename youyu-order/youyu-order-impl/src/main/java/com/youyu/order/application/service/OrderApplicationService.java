@@ -4,8 +4,8 @@ import com.youyu.common.exception.DomainException;
 import com.youyu.common.util.CheckDigitUtil;
 import com.youyu.framework.context.I18N;
 import com.youyu.order.api.dto.SeckillOrderTimeoutMessage;
-import com.youyu.order.domain.model.OrderAggregate;
-import com.youyu.order.domain.model.ShippingAddress;
+import com.youyu.order.domain.aggregate.Order;
+import com.youyu.order.domain.valueobject.ShippingAddress;
 import com.youyu.order.domain.repository.OrderRepository;
 import com.youyu.order.domain.repository.ProductRepository;
 import com.youyu.order.domain.repository.UserRepository;
@@ -51,7 +51,7 @@ public class OrderApplicationService {
      * @return 订单聚合根
      */
     @Transactional(rollbackFor = Exception.class)
-    public OrderAggregate createOrder(Long userId, Long productId, Integer quantity) {
+    public Order createOrder(Long userId, Long productId, Integer quantity) {
         log.info("普通订单创建开始，userId: {}, productId: {}, quantity: {}", userId, productId, quantity);
 
         // 1. 查询商品详情
@@ -63,7 +63,7 @@ public class OrderApplicationService {
             .orElseThrow(() -> new DomainException("未找到默认收货地址"));
 
         // 3. 调用领域服务创建订单（内部完成金额计算）
-        OrderAggregate order = orderDomainService.createNormalOrder(
+        Order order = orderDomainService.createNormalOrder(
             userId, productId, quantity, product.getPrice(), shippingAddress
         );
 
@@ -102,8 +102,8 @@ public class OrderApplicationService {
      * @return 订单聚合根
      */
     @Transactional(rollbackFor = Exception.class)
-    public OrderAggregate createSeckillOrder(Long userId, Long productId, Integer quantity, 
-                                              BigDecimal amount, Long activityId) {
+    public Order createSeckillOrder(Long userId, Long productId, Integer quantity,
+                                                                 BigDecimal amount, Long activityId) {
         log.info("秒杀订单创建开始，userId: {}, productId: {}, activityId: {}", userId, productId, activityId);
 
         // 1. 查询用户默认收货地址(通过仓储接口)
@@ -111,7 +111,7 @@ public class OrderApplicationService {
             .orElseThrow(() -> new RuntimeException("未找到默认收货地址，userId: " + userId));
 
         // 2. 调用领域服务创建订单(价格已从 MQ 消息中获取，无需再查)
-        OrderAggregate order = orderDomainService.createSeckillOrder(
+        Order order = orderDomainService.createSeckillOrder(
             userId, productId, quantity, amount, activityId, shippingAddress
         );
 
@@ -139,7 +139,7 @@ public class OrderApplicationService {
      * @return 是否已支付
      */
     public boolean isOrderPaid(Long orderId) {
-        OrderAggregate order = orderRepository.findById(orderId).orElse(null);
+        Order order = orderRepository.findById(orderId).orElse(null);
         if (order == null) {
             return false;
         }
@@ -153,7 +153,7 @@ public class OrderApplicationService {
      */
     @Transactional(rollbackFor = Exception.class)
     public void updateOrderStatusToTimeout(Long orderId) {
-        OrderAggregate order = orderRepository.findById(orderId).orElse(null);
+        Order order = orderRepository.findById(orderId).orElse(null);
         if (order != null) {
             order.markAsTimeout();
             orderRepository.update(order);
@@ -180,7 +180,7 @@ public class OrderApplicationService {
             timeoutMessage.getOrderId(), timeoutMessage.getOrderType());
         
         // 1. 查询订单
-        OrderAggregate order = orderRepository.findById(timeoutMessage.getOrderId())
+        Order order = orderRepository.findById(timeoutMessage.getOrderId())
             .orElseThrow(() -> new RuntimeException("订单不存在，orderId: " + timeoutMessage.getOrderId()));
         
         // 2. 调用领域服务处理订单超时（检查支付状态、标记超时）
@@ -244,12 +244,12 @@ public class OrderApplicationService {
         log.info("秒杀订单库存回滚消息发送成功，orderId: {}, activityId: {}", orderId, activityId);
     }
 
-    public OrderAggregate getOrderById(Long orderId) {
+    public Order getOrderById(Long orderId) {
         return orderRepository.findById(orderId)
             .orElseThrow(() -> new RuntimeException("订单不存在，orderId: " + orderId));
     }
 
-    public OrderAggregate getOrderByOrderNo(String orderNo) {
+    public Order getOrderByOrderNo(String orderNo) {
         I18N.assertTrue(CheckDigitUtil.validate(orderNo));
         return orderRepository.findByOrderNo(orderNo)
             .orElseThrow(() -> new RuntimeException("订单不存在，orderNo: " + orderNo));

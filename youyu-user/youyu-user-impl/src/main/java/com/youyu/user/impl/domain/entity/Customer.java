@@ -1,4 +1,4 @@
-package com.youyu.user.impl.domain.model;
+package com.youyu.user.impl.domain.entity;
 
 import com.youyu.framework.datasource.mybatis.BaseDO;
 import lombok.Getter;
@@ -9,11 +9,11 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 平台管理员资料领域模型
+ * 外部顾客领域模型
  */
 @Getter
 @Setter
-public class PlatformUser extends BaseDO implements Serializable {
+public class Customer extends BaseDO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -44,9 +44,14 @@ public class PlatformUser extends BaseDO implements Serializable {
     private Integer status;
 
     /**
-     * 创建平台管理员资料
+     * 注册时间
      */
-    public static PlatformUser create(Long userId, String username, String phone, String email) {
+    private LocalDateTime registerTime;
+
+    /**
+     * 创建外部顾客
+     */
+    public static Customer create(Long userId, String username, String phone, String email) {
         if (userId == null || userId <= 0) {
             throw new IllegalArgumentException("用户ID必须大于0");
         }
@@ -54,13 +59,14 @@ public class PlatformUser extends BaseDO implements Serializable {
             throw new IllegalArgumentException("用户名不能为空");
         }
 
-        PlatformUser platformUser = new PlatformUser();
-        platformUser.userId = userId;
-        platformUser.username = username;
-        platformUser.phone = phone;
-        platformUser.email = email;
-        platformUser.status = 1; // 默认启用
-        platformUser.initTime(LocalDateTime.now());
-        return platformUser;
+        Customer customer = new Customer();
+        customer.userId = userId;
+        customer.username = username;
+        customer.phone = phone;
+        customer.email = email;
+        customer.status = 1; // 默认启用
+        customer.registerTime = LocalDateTime.now();
+        customer.initTime(LocalDateTime.now());
+        return customer;
     }
 }

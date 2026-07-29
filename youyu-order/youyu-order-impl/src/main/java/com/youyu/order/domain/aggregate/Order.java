@@ -1,5 +1,6 @@
-package com.youyu.order.domain.model;
+package com.youyu.order.domain.aggregate;
 
+import com.youyu.order.domain.valueobject.ShippingAddress;
 import lombok.Getter;
 
 import java.io.Serial;
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
  * 3. 提供订单状态流转方法
  */
 @Getter
-public class OrderAggregate implements Serializable {
+public class Order implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -138,7 +139,7 @@ public class OrderAggregate implements Serializable {
      */
     public static final int SECKILL_ORDER_PAY_TIMEOUT_MINUTES = 5;
 
-    private OrderAggregate() {
+    private Order() {
     }
 
     /**
@@ -151,9 +152,9 @@ public class OrderAggregate implements Serializable {
      * @param shippingAddress  收货地址快照
      * @return 订单聚合根
      */
-    public static OrderAggregate createNormalOrder(Long userId, Long productId, Integer quantity,
-                                                    BigDecimal price, ShippingAddress shippingAddress) {
-        OrderAggregate order = new OrderAggregate();
+    public static Order createNormalOrder(Long userId, Long productId, Integer quantity,
+                                                                       BigDecimal price, ShippingAddress shippingAddress) {
+        Order order = new Order();
         order.userId = userId;
         order.productId = productId;
         order.quantity = quantity;
@@ -175,10 +176,10 @@ public class OrderAggregate implements Serializable {
      * @param shippingAddress  收货地址快照
      * @return 订单聚合根
      */
-    public static OrderAggregate createSeckillOrder(Long userId, Long productId, Integer quantity,
-                                                     BigDecimal amount, Long activityId, 
-                                                     ShippingAddress shippingAddress) {
-        OrderAggregate order = new OrderAggregate();
+    public static Order createSeckillOrder(Long userId, Long productId, Integer quantity,
+                                                                        BigDecimal amount, Long activityId,
+                                                                        ShippingAddress shippingAddress) {
+        Order order = new Order();
         order.userId = userId;
         order.productId = productId;
         order.quantity = quantity;
@@ -193,11 +194,11 @@ public class OrderAggregate implements Serializable {
     /**
      * 从数据库恢复订单（用于查询）
      */
-    public static OrderAggregate restore(Long id, String orderNo, Long userId, Long productId,
-                                         Integer quantity, BigDecimal amount, String orderType,
-                                         Long activityId, LocalDateTime payExpireTime,
-                                         Integer status, LocalDateTime createTime, LocalDateTime updateTime) {
-        OrderAggregate order = new OrderAggregate();
+    public static Order restore(Long id, String orderNo, Long userId, Long productId,
+                                                             Integer quantity, BigDecimal amount, String orderType,
+                                                             Long activityId, LocalDateTime payExpireTime,
+                                                             Integer status, LocalDateTime createTime, LocalDateTime updateTime) {
+        Order order = new Order();
         order.id = id;
         order.orderNo = orderNo;
         order.userId = userId;

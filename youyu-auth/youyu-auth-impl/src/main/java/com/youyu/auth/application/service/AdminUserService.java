@@ -1,6 +1,6 @@
 package com.youyu.auth.application.service;
 
-import com.youyu.auth.domain.model.UserDevice;
+import com.youyu.auth.domain.aggregate.UserDevice;
 import com.youyu.auth.domain.repository.UserDeviceRepository;
 import com.youyu.auth.infrastructure.persistence.config.LoginModeConfig;
 import com.youyu.auth.infrastructure.persistence.redis.AuthRedisService;

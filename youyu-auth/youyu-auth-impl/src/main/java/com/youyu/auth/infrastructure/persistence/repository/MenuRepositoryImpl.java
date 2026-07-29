@@ -1,7 +1,9 @@
 package com.youyu.auth.infrastructure.persistence.repository;
 
+import java.util.*;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.youyu.auth.domain.model.Menu;
+import com.youyu.auth.domain.entity.Menu;
 import com.youyu.auth.domain.repository.MenuRepository;
 import com.youyu.auth.infrastructure.persistence.converter.MenuConverter;
 import com.youyu.auth.infrastructure.persistence.entity.MenuDO;
@@ -9,17 +11,9 @@ import com.youyu.auth.infrastructure.persistence.mapper.MenuMapper;
 import com.youyu.common.util.CollectionUtil;
 import com.youyu.framework.datasource.mybatis.BaseRepositoryImpl;
 import com.youyu.framework.datasource.mybatis.SmartQueryWrapper;
-import jakarta.annotation.Resource;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * 菜单仓储实现

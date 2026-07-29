@@ -6,7 +6,7 @@ import com.youyu.auth.api.dto.CreateUserIdentityRequest;
 import com.youyu.auth.api.dto.CreateUserIdentityResponse;
 import com.youyu.common.model.Result;
 import com.youyu.framework.context.UserType;
-import com.youyu.user.impl.domain.model.Employee;
+import com.youyu.user.impl.domain.entity.Employee;
 import com.youyu.user.impl.domain.repository.EmployeeRepository;
 import com.youyu.user.impl.infrastructure.persistence.entity.EmployeeDO;
 import lombok.Data;

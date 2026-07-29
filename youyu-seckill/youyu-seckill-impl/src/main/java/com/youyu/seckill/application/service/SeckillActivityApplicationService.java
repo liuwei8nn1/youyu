@@ -1,7 +1,7 @@
 package com.youyu.seckill.application.service;
 
 import com.youyu.common.model.Result;
-import com.youyu.seckill.domain.model.SeckillActivityAggregate;
+import com.youyu.seckill.domain.aggregate.SeckillActivity;
 import com.youyu.seckill.domain.repository.SeckillActivityRepository;
 import com.youyu.seckill.domain.service.SeckillStockDomainService;
 import jakarta.annotation.Resource;
@@ -41,7 +41,7 @@ public class SeckillActivityApplicationService {
      * @return 操作结果
      */
     @Transactional(rollbackFor = Exception.class)
-    public Result<Void> createActivity(SeckillActivityAggregate activity) {
+    public Result<Void> createActivity(SeckillActivity activity) {
         try {
             // 1. 保存到数据库
             activityRepository.save(activity);
@@ -72,7 +72,7 @@ public class SeckillActivityApplicationService {
      * @return 操作结果
      */
     @Transactional(rollbackFor = Exception.class)
-    public Result<Void> updateActivity(SeckillActivityAggregate activity) {
+    public Result<Void> updateActivity(SeckillActivity activity) {
         try {
             // 参数校验
             if (activity == null || activity.getId() == null) {
@@ -117,7 +117,7 @@ public class SeckillActivityApplicationService {
             }
 
             // 1. 查询活动信息
-            SeckillActivityAggregate activity = activityRepository.findById(id);
+            SeckillActivity activity = activityRepository.findById(id);
             
             if (activity != null) {
                 // 2. 先删除 Redis 缓存（包括本地缓存）

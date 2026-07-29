@@ -1,7 +1,7 @@
 package com.youyu.product.infrastructure.persistence.repository;
 
 import com.youyu.framework.datasource.mybatis.BaseRepositoryImpl;
-import com.youyu.product.domain.model.ProductAggregate;
+import com.youyu.product.domain.aggregate.Product;
 import com.youyu.product.domain.repository.ProductRepository;
 import com.youyu.product.infrastructure.persistence.converter.ProductConverter;
 import com.youyu.product.infrastructure.persistence.entity.ProductDO;
@@ -16,7 +16,7 @@ import java.util.Optional;
 public class ProductRepositoryImpl extends BaseRepositoryImpl<ProductDO, ProductMapper, Long> implements ProductRepository {
 
     @Override
-    public void save(ProductAggregate product) {
+    public void save(Product product) {
         ProductDO productDO = ProductConverter.INSTANCE.toDO(product);
         if (productDO.getId() == null) {
             baseDao.insert(productDO);
@@ -29,13 +29,13 @@ public class ProductRepositoryImpl extends BaseRepositoryImpl<ProductDO, Product
     }
 
     @Override
-    public Optional<ProductAggregate> findById(Long productId) {
+    public Optional<Product> findById(Long productId) {
         ProductDO productDO = baseDao.selectById(productId);
-        return Optional.ofNullable(ProductConverter.INSTANCE.toAggregate(productDO));
+        return Optional.ofNullable(ProductConverter.INSTANCE.toProduct(productDO));
     }
 
     @Override
-    public void update(ProductAggregate product) {
+    public void update(Product product) {
         ProductDO productDO = ProductConverter.INSTANCE.toDO(product);
         baseDao.updateById(productDO);
         log.info("商品更新成功，productId: {}", productDO.getId());

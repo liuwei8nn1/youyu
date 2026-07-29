@@ -1,7 +1,7 @@
 package com.youyu.user.impl.infrastructure.persistence.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.youyu.user.impl.domain.model.UserProfile;
+import com.youyu.user.impl.domain.aggregate.UserProfile;
 import com.youyu.user.impl.domain.repository.UserProfileRepository;
 import com.youyu.user.impl.infrastructure.persistence.entity.UserProfileDO;
 import com.youyu.user.impl.infrastructure.persistence.mapper.UserProfileMapper;

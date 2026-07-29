@@ -1,13 +1,14 @@
 package com.youyu.user.impl.infrastructure.persistence.repository;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.youyu.common.util.CollectionUtil;
-import com.youyu.common.util.ObjUtil;
 import com.youyu.framework.datasource.mybatis.BaseRepositoryImpl;
 import com.youyu.framework.datasource.mybatis.SmartQueryWrapper;
 import com.youyu.framework.web.util.PageUtil;
-import com.youyu.framework.web.util.PageUtil;
-import com.youyu.user.impl.domain.model.Employee;
+import com.youyu.user.impl.domain.entity.Employee;
 import com.youyu.user.impl.domain.repository.EmployeeRepository;
 import com.youyu.user.impl.infrastructure.persistence.converter.EmployeeConverter;
 import com.youyu.user.impl.infrastructure.persistence.entity.EmployeeDO;
@@ -15,10 +16,6 @@ import com.youyu.user.impl.infrastructure.persistence.mapper.EmployeeMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * 企业员工资料仓储实现

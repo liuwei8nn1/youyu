@@ -1,6 +1,6 @@
 package com.youyu.auth.domain.repository;
 
-import com.youyu.auth.domain.model.UserIdentity;
+import com.youyu.auth.domain.aggregate.UserIdentity;
 
 import java.util.Optional;
 

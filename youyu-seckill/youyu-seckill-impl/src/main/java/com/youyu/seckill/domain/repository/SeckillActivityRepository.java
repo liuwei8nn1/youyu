@@ -1,8 +1,8 @@
 package com.youyu.seckill.domain.repository;
 
-import com.youyu.seckill.domain.model.SeckillActivityAggregate;
-
 import java.util.List;
+
+import com.youyu.seckill.domain.aggregate.SeckillActivity;
 
 /**
  * 秒杀活动仓储接口（领域层）
@@ -12,27 +12,27 @@ public interface SeckillActivityRepository {
     /**
      * 根据ID查询活动
      */
-    SeckillActivityAggregate findById(Long id);
+    SeckillActivity findById(Long id);
 
     /**
      * 根据商品ID查询活动
      */
-    SeckillActivityAggregate findByProductId(Long productId);
+    SeckillActivity findByProductId(Long productId);
 
     /**
      * 查询所有活动
      */
-    List<SeckillActivityAggregate> listAll();
+    List<SeckillActivity> listAll();
 
     /**
      * 保存活动
      */
-    void save(SeckillActivityAggregate activity);
+    void save(SeckillActivity activity);
 
     /**
      * 更新活动
      */
-    void update(SeckillActivityAggregate activity);
+    void update(SeckillActivity activity);
 
     /**
      * 删除活动
