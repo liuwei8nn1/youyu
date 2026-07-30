@@ -1,7 +1,7 @@
 package com.youyu.order.domain.service;
 
-import com.youyu.order.domain.aggregate.Order;
-import com.youyu.order.domain.valueobject.ShippingAddress;
+import com.youyu.order.domain.model.Order;
+import com.youyu.order.domain.model.ShippingAddress;
 import com.youyu.common.util.CheckDigitUtil;
 import com.youyu.common.model.SnowflakeIdGenerator;
 import lombok.RequiredArgsConstructor;

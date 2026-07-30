@@ -1,6 +1,6 @@
 package com.youyu.framework.mq.compensation.domain.repository;
 
-import com.youyu.framework.mq.compensation.domain.entity.MessageCompensationRecord;
+import com.youyu.framework.mq.compensation.domain.model.MessageCompensationRecord;
 
 import java.util.List;
 

@@ -2,8 +2,8 @@ package com.youyu.user.impl.interfaces.controller;
 
 import com.youyu.common.model.Result;
 import com.youyu.user.impl.application.service.UserProfileApplicationService;
-import com.youyu.user.impl.domain.entity.Address;
-import com.youyu.user.impl.domain.aggregate.UserProfile;
+import com.youyu.user.impl.interfaces.vo.AddressVO;
+import com.youyu.user.impl.interfaces.vo.UserProfileVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +22,8 @@ public class UserProfileController {
      * 获取用户资料
      */
     @GetMapping("/profile/{userId}")
-    public Result<UserProfile> getUserProfile(@PathVariable Long userId) {
-        Optional<UserProfile> profile = userProfileApplicationService.getUserProfile(userId);
+    public Result<UserProfileVO> getUserProfile(@PathVariable Long userId) {
+        Optional<UserProfileVO> profile = userProfileApplicationService.getUserProfile(userId);
         return profile.map(Result::success)
                 .orElseGet(() -> Result.error("用户资料不存在"));
     }
@@ -51,8 +51,8 @@ public class UserProfileController {
      * 获取用户地址列表
      */
     @GetMapping("/address/{userId}")
-    public Result<List<Address>> getUserAddresses(@PathVariable Long userId) {
-        List<Address> addresses = userProfileApplicationService.getUserAddresses(userId);
+    public Result<List<AddressVO>> getUserAddresses(@PathVariable Long userId) {
+        List<AddressVO> addresses = userProfileApplicationService.getUserAddresses(userId);
         return Result.success(addresses);
     }
 

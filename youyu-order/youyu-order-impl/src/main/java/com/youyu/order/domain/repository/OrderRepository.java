@@ -2,7 +2,7 @@ package com.youyu.order.domain.repository;
 
 import java.util.Optional;
 
-import com.youyu.order.domain.aggregate.Order;
+import com.youyu.order.domain.model.Order;
 
 public interface OrderRepository {
 

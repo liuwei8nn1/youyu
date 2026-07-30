@@ -2,7 +2,7 @@ package com.youyu.seckill.domain.repository;
 
 import java.util.List;
 
-import com.youyu.seckill.domain.aggregate.SeckillActivity;
+import com.youyu.seckill.domain.model.SeckillActivity;
 
 /**
  * 秒杀活动仓储接口（领域层）

@@ -1,7 +1,7 @@
 package com.youyu.user.impl.domain.repository;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.youyu.user.impl.domain.entity.Employee;
+import com.youyu.user.impl.domain.model.Employee;
 import com.youyu.user.impl.infrastructure.persistence.entity.EmployeeDO;
 
 import java.util.List;

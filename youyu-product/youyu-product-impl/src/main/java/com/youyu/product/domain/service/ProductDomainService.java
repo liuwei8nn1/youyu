@@ -7,7 +7,7 @@ import com.youyu.common.constant.BaseI18nKey;
 import com.youyu.framework.cache.redis.RedisKeyBuilder;
 import com.youyu.framework.cache.redis.RedisUtil;
 import com.youyu.framework.context.I18N;
-import com.youyu.product.domain.aggregate.Product;
+import com.youyu.product.domain.model.Product;
 import com.youyu.product.domain.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

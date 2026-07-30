@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.youyu.auth.domain.aggregate.UserDevice;
+import com.youyu.auth.domain.model.UserDevice;
 import com.youyu.auth.domain.repository.UserDeviceRepository;
 import com.youyu.auth.infrastructure.persistence.converter.UserDeviceConverter;
 import com.youyu.auth.infrastructure.persistence.entity.UserDeviceDO;

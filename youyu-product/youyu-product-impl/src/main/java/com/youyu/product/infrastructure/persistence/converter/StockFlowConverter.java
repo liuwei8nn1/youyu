@@ -1,6 +1,6 @@
 package com.youyu.product.infrastructure.persistence.converter;
 
-import com.youyu.product.domain.aggregate.StockFlow;
+import com.youyu.product.domain.model.StockFlow;
 import com.youyu.product.infrastructure.persistence.entity.StockFlowDO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

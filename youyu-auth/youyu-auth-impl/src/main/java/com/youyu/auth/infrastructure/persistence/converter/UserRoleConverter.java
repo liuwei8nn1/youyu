@@ -1,6 +1,6 @@
 package com.youyu.auth.infrastructure.persistence.converter;
 
-import com.youyu.auth.domain.entity.UserRole;
+import com.youyu.auth.domain.model.UserRole;
 import com.youyu.auth.infrastructure.persistence.entity.UserRoleDO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

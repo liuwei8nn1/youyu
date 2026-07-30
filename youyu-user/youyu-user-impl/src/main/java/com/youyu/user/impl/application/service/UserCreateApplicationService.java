@@ -2,10 +2,10 @@ package com.youyu.user.impl.application.service;
 
 import com.youyu.framework.context.UserType;
 import com.youyu.user.api.dto.CreateUserRequest;
-import com.youyu.user.impl.domain.entity.Customer;
-import com.youyu.user.impl.domain.entity.Employee;
-import com.youyu.user.impl.domain.entity.PlatformUser;
-import com.youyu.user.impl.domain.aggregate.UserProfile;
+import com.youyu.user.impl.domain.model.Customer;
+import com.youyu.user.impl.domain.model.Employee;
+import com.youyu.user.impl.domain.model.PlatformUser;
+import com.youyu.user.impl.domain.model.UserProfile;
 import com.youyu.user.impl.domain.repository.CustomerRepository;
 import com.youyu.user.impl.domain.repository.EmployeeRepository;
 import com.youyu.user.impl.domain.repository.PlatformUserRepository;

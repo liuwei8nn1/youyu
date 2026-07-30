@@ -1,6 +1,6 @@
 package com.youyu.user.impl.domain.repository;
 
-import com.youyu.user.impl.domain.entity.Address;
+import com.youyu.user.impl.domain.model.Address;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,6 +1,6 @@
 package com.youyu.auth.infrastructure.persistence.converter;
 
-import com.youyu.auth.domain.entity.Menu;
+import com.youyu.auth.domain.model.Menu;
 import com.youyu.auth.infrastructure.persistence.entity.MenuDO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

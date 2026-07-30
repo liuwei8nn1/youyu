@@ -3,7 +3,7 @@ package com.youyu.framework.mq.compensation.application.provider;
 import java.util.function.Consumer;
 
 import com.youyu.framework.mq.compensation.config.MqCompensationProperties;
-import com.youyu.framework.mq.compensation.domain.entity.MessageCompensationRecord;
+import com.youyu.framework.mq.compensation.domain.model.MessageCompensationRecord;
 import com.youyu.framework.mq.compensation.domain.repository.MessageCompensationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

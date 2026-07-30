@@ -2,7 +2,7 @@ package com.youyu.auth.infrastructure.persistence.repository;
 
 import java.util.Optional;
 
-import com.youyu.auth.domain.aggregate.UserIdentity;
+import com.youyu.auth.domain.model.UserIdentity;
 import com.youyu.auth.domain.repository.UserIdentityRepository;
 import com.youyu.auth.infrastructure.persistence.converter.UserIdentityConverter;
 import com.youyu.auth.infrastructure.persistence.entity.UserIdentityDO;

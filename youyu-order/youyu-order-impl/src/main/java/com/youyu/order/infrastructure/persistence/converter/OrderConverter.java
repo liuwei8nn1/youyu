@@ -1,6 +1,6 @@
 package com.youyu.order.infrastructure.persistence.converter;
 
-import com.youyu.order.domain.aggregate.Order;
+import com.youyu.order.domain.model.Order;
 import com.youyu.order.infrastructure.persistence.entity.OrderDO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

@@ -1,6 +1,6 @@
 package com.youyu.user.impl.infrastructure.persistence.converter;
 
-import com.youyu.user.impl.domain.entity.Customer;
+import com.youyu.user.impl.domain.model.Customer;
 import com.youyu.user.impl.infrastructure.persistence.entity.CustomerDO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

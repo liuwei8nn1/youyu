@@ -2,7 +2,7 @@ package com.youyu.product.infrastructure.persistence.repository;
 
 import com.youyu.framework.datasource.mybatis.BaseRepositoryImpl;
 import com.youyu.framework.datasource.mybatis.SmartQueryWrapper;
-import com.youyu.product.domain.aggregate.Category;
+import com.youyu.product.domain.model.Category;
 import com.youyu.product.domain.repository.CategoryRepository;
 import com.youyu.product.infrastructure.persistence.converter.CategoryConverter;
 import com.youyu.product.infrastructure.persistence.entity.CategoryDO;

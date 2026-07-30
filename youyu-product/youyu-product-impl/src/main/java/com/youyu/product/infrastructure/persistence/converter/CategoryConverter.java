@@ -1,6 +1,6 @@
 package com.youyu.product.infrastructure.persistence.converter;
 
-import com.youyu.product.domain.aggregate.Category;
+import com.youyu.product.domain.model.Category;
 import com.youyu.product.infrastructure.persistence.entity.CategoryDO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

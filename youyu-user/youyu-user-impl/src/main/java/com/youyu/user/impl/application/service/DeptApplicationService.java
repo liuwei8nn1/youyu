@@ -1,7 +1,9 @@
 package com.youyu.user.impl.application.service;
 
-import com.youyu.user.impl.domain.aggregate.Dept;
+import com.youyu.user.impl.domain.model.Dept;
 import com.youyu.user.impl.domain.repository.DeptRepository;
+import com.youyu.user.impl.interfaces.converter.DeptConverter;
+import com.youyu.user.impl.interfaces.vo.DeptVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -81,32 +83,28 @@ public class DeptApplicationService {
     /**
      * 获取所有部门（树形结构）
      */
-    public List<Dept> getDeptTree() {
+    public List<DeptVO> getDeptTree() {
         List<Dept> allDepts = deptRepository.listAll();
-        return buildDeptTree(allDepts, 0L);
+        return buildDeptVOTree(allDepts, 0L);
     }
 
     /**
      * 获取所有部门（平铺列表）
      */
-    public List<Dept> getAllDepts() {
-        return deptRepository.listAll();
+    public List<DeptVO> getAllDepts() {
+        return DeptConverter.INSTANCE.toVOList(deptRepository.listAll());
     }
 
-    /**
-     * 构建部门树
-     */
-    private List<Dept> buildDeptTree(List<Dept> allDepts, Long parentId) {
+    private List<DeptVO> buildDeptVOTree(List<Dept> allDepts, Long parentId) {
         if (CollectionUtils.isEmpty(allDepts)) {
             return Collections.emptyList();
         }
-
         return allDepts.stream()
                 .filter(dept -> dept.getParentId().equals(parentId))
-                .peek(dept -> {
-                    // 递归设置子部门
-                    List<Dept> children = buildDeptTree(allDepts, dept.getId());
-                    dept.setChildren(children);
+                .map(dept -> {
+                    DeptVO vo = DeptConverter.INSTANCE.toVO(dept);
+                    vo.setChildren(buildDeptVOTree(allDepts, dept.getId()));
+                    return vo;
                 })
                 .collect(Collectors.toList());
     }

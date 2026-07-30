@@ -5,8 +5,8 @@ import java.util.List;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.youyu.auth.api.model.Permission;
 import com.youyu.auth.application.service.RolePermissionApplicationService;
-import com.youyu.auth.domain.entity.Menu;
-import com.youyu.auth.domain.aggregate.Role;
+import com.youyu.auth.interfaces.vo.MenuVO;
+import com.youyu.auth.interfaces.vo.RoleVO;
 import com.youyu.common.model.Result;
 import com.youyu.framework.context.UserType;
 import com.youyu.framework.context.web.resolver.ProxyRequest;
@@ -71,8 +71,8 @@ public class RolePermissionController {
      * 查询所有角色
      */
     @GetMapping("roles")
-    public Result<List<Role>> getAllRoles() {
-        List<Role> roles = rolePermissionService.getAllRoles();
+    public Result<List<RoleVO>> getAllRoles() {
+        List<RoleVO> roles = rolePermissionService.getAllRoles();
         return Result.success(roles);
     }
     
@@ -80,8 +80,8 @@ public class RolePermissionController {
      * 根据用户类型查询角色
      */
     @GetMapping("/roles/byUserType")
-    public Result<List<Role>> getRolesByUserType(@RequestParam(name = "userType") Integer userType) {
-        List<Role> roles = rolePermissionService.getRolesByUserType(userType);
+    public Result<List<RoleVO>> getRolesByUserType(@RequestParam(name = "userType") Integer userType) {
+        List<RoleVO> roles = rolePermissionService.getRolesByUserType(userType);
         return Result.success(roles);
     }
 
@@ -89,8 +89,8 @@ public class RolePermissionController {
      * 分页查询角色
      */
     @GetMapping("/roles/page")
-    public Result<Page<Role>> getRolesPage(ProxyRequest q, @RequestParam(name = "userType", required = false) Integer userType) {
-        Page<Role> pageResult = rolePermissionService.getRolesPage(q.getPage(), userType);
+    public Result<Page<RoleVO>> getRolesPage(ProxyRequest q, @RequestParam(name = "userType", required = false) Integer userType) {
+        Page<RoleVO> pageResult = rolePermissionService.getRolesPage(q.getPage(), userType);
         return Result.success(pageResult);
     }
 
@@ -109,8 +109,8 @@ public class RolePermissionController {
      * 查询角色的菜单
      */
     @GetMapping("getRoleMenus")
-    public Result<List<Menu>> getRoleMenus(@RequestParam(name = "roleId") Long roleId) {
-        List<Menu> menus = rolePermissionService.getRoleMenus(roleId);
+    public Result<List<MenuVO>> getRoleMenus(@RequestParam(name = "roleId") Long roleId) {
+        List<MenuVO> menus = rolePermissionService.getRoleMenus(roleId);
         return Result.success(menus);
     }
 
@@ -118,8 +118,8 @@ public class RolePermissionController {
      * 查询所有菜单（用于分配时选择）
      */
     @GetMapping("/menus/all")
-    public Result<List<Menu>> getAllMenusForAssignment() {
-        List<Menu> menus = rolePermissionService.getAllMenusForAssignment();
+    public Result<List<MenuVO>> getAllMenusForAssignment() {
+        List<MenuVO> menus = rolePermissionService.getAllMenusForAssignment();
         return Result.success(menus);
     }
     @GetMapping("/getUserPermissions")
@@ -186,8 +186,8 @@ public class RolePermissionController {
      */
     @GetMapping("/menus")
 
-    public Result<List<Menu>> getAllMenus() {
-        List<Menu> menus = rolePermissionService.getAllMenus();
+    public Result<List<MenuVO>> getAllMenus() {
+        List<MenuVO> menus = rolePermissionService.getAllMenus();
         return Result.success(menus);
     }
 
@@ -196,8 +196,8 @@ public class RolePermissionController {
      */
     @GetMapping("/getUserMenus")
     @Permission(Permission.LOGIN)
-    public Result<List<Menu>> getUserMenus(ProxyRequest q) {
-        List<Menu> menus = rolePermissionService.getUserMenus(q.getUserId(),q.getUserType());
+    public Result<List<MenuVO>> getUserMenus(ProxyRequest q) {
+        List<MenuVO> menus = rolePermissionService.getUserMenus(q.getUserId(),q.getUserType());
         return Result.success(menus);
     }
 

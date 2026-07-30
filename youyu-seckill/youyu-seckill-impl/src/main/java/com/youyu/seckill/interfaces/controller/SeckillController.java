@@ -6,8 +6,8 @@ import com.youyu.common.model.Result;
 import com.youyu.seckill.application.dto.SeckillOrderResponse;
 import com.youyu.seckill.application.service.SeckillActivityApplicationService;
 import com.youyu.seckill.application.service.SeckillOrderApplicationService;
-import com.youyu.seckill.domain.aggregate.SeckillActivity;
-import com.youyu.seckill.domain.repository.SeckillActivityRepository;
+import com.youyu.seckill.interfaces.vo.SeckillActivityRequest;
+import com.youyu.seckill.interfaces.vo.SeckillActivityVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +23,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SeckillController {
 
-    private final SeckillActivityRepository activityRepository;
     private final SeckillActivityApplicationService activityApplicationService;
     private final SeckillOrderApplicationService seckillOrderService;
 
@@ -31,9 +30,9 @@ public class SeckillController {
      * 查询所有秒杀活动
      */
     @GetMapping("/list")
-    public Result<List<SeckillActivity>> listAll() {
+    public Result<List<SeckillActivityVO>> listAll() {
         try {
-            List<SeckillActivity> activities = activityRepository.listAll();
+            List<SeckillActivityVO> activities = activityApplicationService.listAll();
             return Result.success(activities);
         } catch (Exception e) {
             log.error("查询秒杀活动列表失败", e);
@@ -45,12 +44,12 @@ public class SeckillController {
      * 查询秒杀活动详情
      */
     @GetMapping("/detail/{id}")
-    public Result<SeckillActivity> getById(@PathVariable Long id) {
+    public Result<SeckillActivityVO> getById(@PathVariable Long id) {
         try {
             if (id == null || id <= 0) {
                 return Result.error("活动ID无效");
             }
-            SeckillActivity activity = activityRepository.findById(id);
+            SeckillActivityVO activity = activityApplicationService.getById(id);
             if (activity == null) {
                 return Result.error("活动不存在");
             }
@@ -65,21 +64,12 @@ public class SeckillController {
      * 创建秒杀活动
      */
     @PostMapping("/save")
-    public Result<Void> save(@RequestBody SeckillActivity activity) {
+    public Result<Void> save(@RequestBody SeckillActivityRequest request) {
         try {
-            // 参数校验
-            if (activity == null) {
+            if (request == null) {
                 return Result.error("活动信息不能为空");
             }
-            
-            // 调用领域方法校验
-            activity.validate();
-            
-            // 调用应用服务（包含数据库保存和Redis缓存同步）
-            return activityApplicationService.createActivity(activity);
-        } catch (IllegalArgumentException e) {
-            log.warn("秒杀活动参数校验失败", e);
-            return Result.error("参数错误：" + e.getMessage());
+            return activityApplicationService.createActivity(request);
         } catch (Exception e) {
             log.error("创建秒杀活动失败", e);
             return Result.error("创建失败：" + e.getMessage());
@@ -90,17 +80,11 @@ public class SeckillController {
      * 更新秒杀活动
      */
     @PutMapping("/update")
-    public Result<Void> update(@RequestBody SeckillActivity activity) {
+    public Result<Void> update(@RequestBody SeckillActivityRequest request) {
         try {
-            // 参数校验
-            if (activity == null || activity.getId() == null) {
-                return Result.error("活动信息不完整");
-            }
-            
-            // 调用应用服务（包含数据库更新和Redis缓存同步）
-            return activityApplicationService.updateActivity(activity);
+            return activityApplicationService.updateActivity(request);
         } catch (Exception e) {
-            log.error("更新秒杀活动失败，id: {}", activity != null ? activity.getId() : null, e);
+            log.error("更新秒杀活动失败", e);
             return Result.error("更新失败：" + e.getMessage());
         }
     }

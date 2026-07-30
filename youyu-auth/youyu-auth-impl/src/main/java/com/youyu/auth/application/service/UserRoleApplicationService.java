@@ -1,7 +1,7 @@
 package com.youyu.auth.application.service;
 
-import com.youyu.auth.domain.aggregate.Role;
-import com.youyu.auth.domain.entity.UserRole;
+import com.youyu.auth.domain.model.Role;
+import com.youyu.auth.domain.model.UserRole;
 import com.youyu.auth.domain.repository.RoleRepository;
 import com.youyu.auth.domain.repository.UserRoleRepository;
 import lombok.RequiredArgsConstructor;

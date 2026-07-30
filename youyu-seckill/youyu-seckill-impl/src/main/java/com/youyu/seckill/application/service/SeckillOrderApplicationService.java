@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import com.youyu.common.model.Result;
 import com.youyu.seckill.application.dto.SeckillOrderResponse;
-import com.youyu.seckill.domain.aggregate.SeckillActivity;
+import com.youyu.seckill.domain.model.SeckillActivity;
 import com.youyu.seckill.domain.service.SeckillStockDomainService;
 import com.youyu.seckill.infrastructure.messaging.SeckillOrderMessageProducer;
 import jakarta.annotation.Resource;

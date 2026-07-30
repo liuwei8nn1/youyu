@@ -1,6 +1,6 @@
 package com.youyu.product.infrastructure.persistence.converter;
 
-import com.youyu.product.domain.aggregate.PriceHistory;
+import com.youyu.product.domain.model.PriceHistory;
 import com.youyu.product.infrastructure.persistence.entity.PriceHistoryDO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

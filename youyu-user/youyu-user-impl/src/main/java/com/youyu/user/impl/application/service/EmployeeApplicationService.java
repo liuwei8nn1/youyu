@@ -6,8 +6,10 @@ import com.youyu.auth.api.dto.CreateUserIdentityRequest;
 import com.youyu.auth.api.dto.CreateUserIdentityResponse;
 import com.youyu.common.model.Result;
 import com.youyu.framework.context.UserType;
-import com.youyu.user.impl.domain.entity.Employee;
+import com.youyu.user.impl.domain.model.Employee;
 import com.youyu.user.impl.domain.repository.EmployeeRepository;
+import com.youyu.user.impl.interfaces.converter.EmployeeConverter;
+import com.youyu.user.impl.interfaces.vo.EmployeeVO;
 import com.youyu.user.impl.infrastructure.persistence.entity.EmployeeDO;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 员工管理应用服务
@@ -137,16 +140,20 @@ public class EmployeeApplicationService {
     /**
      * 分页查询员工列表
      */
-    public Page<Employee> listEmployees(Page<EmployeeDO> page, String keyword, Long deptId, Integer status) {
-        return employeeRepository.listPage(page, keyword, deptId, status);
+    public Page<EmployeeVO> listEmployees(Page<EmployeeDO> page, String keyword, Long deptId, Integer status) {
+        Page<Employee> employeePage = employeeRepository.listPage(page, keyword, deptId, status);
+        Page<EmployeeVO> result = new Page<>(employeePage.getCurrent(), employeePage.getSize(), employeePage.getTotal());
+        result.setRecords(employeePage.getRecords().stream().map(EmployeeConverter.INSTANCE::toVO).collect(Collectors.toList()));
+        return result;
     }
 
     /**
      * 获取员工详情
      */
-    public Employee getEmployee(Long id) {
-        return employeeRepository.findById(id)
+    public EmployeeVO getEmployee(Long id) {
+        Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("员工不存在: " + id));
+        return EmployeeConverter.INSTANCE.toVO(employee);
     }
 
     // ==================== DTO ====================

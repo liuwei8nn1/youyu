@@ -3,7 +3,7 @@ package com.youyu.user.impl.domain.repository;
 
 import java.util.Optional;
 
-import com.youyu.user.impl.domain.entity.Customer;
+import com.youyu.user.impl.domain.model.Customer;
 
 /**
  * 外部顾客仓储接口

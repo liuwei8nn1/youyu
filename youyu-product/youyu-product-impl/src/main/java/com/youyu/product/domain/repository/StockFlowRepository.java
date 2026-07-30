@@ -1,6 +1,6 @@
 package com.youyu.product.domain.repository;
 
-import com.youyu.product.domain.aggregate.StockFlow;
+import com.youyu.product.domain.model.StockFlow;
 
 import java.util.List;
 

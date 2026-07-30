@@ -3,10 +3,14 @@ package com.youyu.auth.application.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.youyu.auth.domain.entity.Menu;
-import com.youyu.auth.domain.aggregate.Role;
-import com.youyu.auth.domain.entity.UserRole;
+import com.youyu.auth.domain.model.Menu;
+import com.youyu.auth.domain.model.Role;
+import com.youyu.auth.domain.model.UserRole;
 import com.youyu.auth.domain.repository.MenuRepository;
+import com.youyu.auth.interfaces.converter.MenuConverter;
+import com.youyu.auth.interfaces.converter.RoleConverter;
+import com.youyu.auth.interfaces.vo.MenuVO;
+import com.youyu.auth.interfaces.vo.RoleVO;
 import com.youyu.auth.domain.repository.RoleMenuRepository;
 import com.youyu.auth.domain.repository.RoleRepository;
 import com.youyu.auth.domain.repository.UserRoleRepository;
@@ -101,22 +105,29 @@ public class RolePermissionApplicationService {
     /**
      * 查询所有角色
      */
-    public List<Role> getAllRoles() {
-        return roleRepository.listAll();
+    public List<RoleVO> getAllRoles() {
+        return roleRepository.listAll().stream()
+                .map(RoleConverter.INSTANCE::toVO)
+                .collect(Collectors.toList());
     }
 
     /**
      * 根据用户类型查询角色
      */
-    public List<Role> getRolesByUserType(Integer userType) {
-        return roleRepository.findByUserType(userType);
+    public List<RoleVO> getRolesByUserType(Integer userType) {
+        return roleRepository.findByUserType(userType).stream()
+                .map(RoleConverter.INSTANCE::toVO)
+                .collect(Collectors.toList());
     }
 
     /**
      * 分页查询角色
      */
-    public Page<Role> getRolesPage(Page<RoleDO> page, Integer userType) {
-        return roleRepository.findPage(page, userType);
+    public Page<RoleVO> getRolesPage(Page<RoleDO> page, Integer userType) {
+        Page<Role> rolePage = roleRepository.findPage(page, userType);
+        Page<RoleVO> result = new Page<>(rolePage.getCurrent(), rolePage.getSize(), rolePage.getTotal());
+        result.setRecords(rolePage.getRecords().stream().map(RoleConverter.INSTANCE::toVO).collect(Collectors.toList()));
+        return result;
     }
 
     // ==================== 菜单权限管理 ====================
@@ -143,7 +154,7 @@ public class RolePermissionApplicationService {
     /**
      * 查询角色的菜单
      */
-    public List<Menu> getRoleMenus(Long roleId) {
+    public List<MenuVO> getRoleMenus(Long roleId) {
         // 1. 根据 roleId 查询关联的 menu_ids
         List<Long> menuIds = roleMenuRepository.findMenuIdsByRoleId(roleId);
 
@@ -158,14 +169,16 @@ public class RolePermissionApplicationService {
                 .collect(Collectors.toList());
 
         // 3. 构建树形结构（包含所有类型：目录、菜单、按钮）
-        return buildMenuTree(roleMenus, 0L);
+        return buildMenuVOTree(roleMenus, 0L);
     }
 
     /**
      * 查询所有菜单（用于分配时选择）
      */
-    public List<Menu> getAllMenusForAssignment() {
-        return menuRepository.listAll();
+    public List<MenuVO> getAllMenusForAssignment() {
+        return menuRepository.listAll().stream()
+                .map(MenuConverter.INSTANCE::toVOFlat)
+                .collect(Collectors.toList());
     }
 
     // ==================== 菜单管理 ====================
@@ -240,13 +253,16 @@ public class RolePermissionApplicationService {
     /**
      * 获取所有菜单(树形结构，带缓存)
      */
-    public List<Menu> getAllMenus() {
+    public List<MenuVO> getAllMenus() {
         // 默认查询企业用户类型的菜单
-        return getAllMenusByUserType(UserType.ENTERPRISE.getValue());
+        return getAllMenusByUserType(UserType.ENTERPRISE.getValue()).stream()
+                .map(MenuConverter.INSTANCE::toVO)
+                .collect(Collectors.toList());
     }
 
     /**
      * 根据用户类型获取菜单树（带缓存）
+     * 内部方法，返回领域对象供其他内部方法复用
      */
     public List<Menu> getAllMenusByUserType(Integer userType) {
         // 先从缓存中获取
@@ -269,7 +285,7 @@ public class RolePermissionApplicationService {
     /**
      * 根据用户ID获取菜单(从 Auth 领域本地查询)
      */
-    public List<Menu> getUserMenus(Long userId, Integer userType) {
+    public List<MenuVO> getUserMenus(Long userId, Integer userType) {
         // 从 Auth 领域本地查询用户角色
         List<UserRole> userRoles = userRoleRepository.findByUserIdAndType(userId, userType);
         
@@ -299,7 +315,8 @@ public class RolePermissionApplicationService {
         Set<Long> menuIdSet = new HashSet<>(menuIds);
         
         // 直接在树上过滤（递归过滤，保留有权限的节点及其父节点）
-        return filterMenuTree(allMenusTree, menuIdSet);
+        List<Menu> filtered = filterMenuTree(allMenusTree, menuIdSet);
+        return filtered.stream().map(MenuConverter.INSTANCE::toVO).collect(Collectors.toList());
     }
 
     /**
@@ -310,7 +327,7 @@ public class RolePermissionApplicationService {
      */
     public List<String> getUserPermissions(Long userId, Integer userType) {
         // 1. 获取用户的菜单列表
-        List<Menu> userMenus = getUserMenus(userId, userType);
+        List<MenuVO> userMenus = getUserMenus(userId, userType);
         
         if (CollectionUtils.isEmpty(userMenus)) {
             log.debug("用户 {} 没有菜单权限，返回空权限列表", userId);
@@ -320,7 +337,7 @@ public class RolePermissionApplicationService {
         // 2. 提取所有菜单的权限码（排除空值和DIRECTORY类型的菜单）
         List<String> permissions = userMenus.stream()
                 .filter(menu -> menu.getPermissionCode() != null && !menu.getPermissionCode().isEmpty())
-                .map(Menu::getPermissionCode)
+                .map(MenuVO::getPermissionCode)
                 .distinct() // 去重
                 .collect(Collectors.toList());
         
@@ -395,6 +412,35 @@ public class RolePermissionApplicationService {
                 List<Menu> children = buildMenuTree(allMenus, menu.getId());
                 menu.setChildren(children);
                 result.add(menu);
+            }
+        }
+        return result;
+    }
+
+    private RoleVO toRoleVO(Role r) {
+        RoleVO vo = new RoleVO();
+        vo.setId(r.getId());
+        vo.setRoleCode(r.getRoleCode());
+        vo.setRoleName(r.getRoleName());
+        vo.setDescription(r.getDescription());
+        vo.setUserType(r.getUserType());
+        vo.setStatus(r.getStatus());
+        vo.setSortOrder(r.getSortOrder());
+        vo.setCreatedAt(r.getCreatedAt());
+        vo.setUpdatedAt(r.getUpdatedAt());
+        return vo;
+    }
+
+    private List<MenuVO> buildMenuVOTree(List<Menu> allMenus, Long parentId) {
+        if (CollectionUtils.isEmpty(allMenus)) {
+            return Collections.emptyList();
+        }
+        List<MenuVO> result = new ArrayList<>();
+        for (Menu menu : allMenus) {
+            if (menu.getParentId().equals(parentId)) {
+                MenuVO vo = MenuConverter.INSTANCE.toVO(menu);
+                vo.setChildren(buildMenuVOTree(allMenus, menu.getId()));
+                result.add(vo);
             }
         }
         return result;

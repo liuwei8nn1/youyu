@@ -1,6 +1,6 @@
 package com.youyu.auth.domain.repository;
 
-import com.youyu.auth.domain.aggregate.UserDevice;
+import com.youyu.auth.domain.model.UserDevice;
 
 import java.util.List;
 import java.util.Optional;

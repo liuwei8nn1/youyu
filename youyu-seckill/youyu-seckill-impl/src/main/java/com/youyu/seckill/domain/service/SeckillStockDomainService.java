@@ -9,7 +9,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.youyu.framework.cache.redis.RedisKeyBuilder;
 import com.youyu.common.exception.DomainException;
 import com.youyu.framework.cache.redis.RedisUtil;
-import com.youyu.seckill.domain.aggregate.SeckillActivity;
+import com.youyu.seckill.domain.model.SeckillActivity;
 import com.youyu.seckill.domain.repository.SeckillActivityRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

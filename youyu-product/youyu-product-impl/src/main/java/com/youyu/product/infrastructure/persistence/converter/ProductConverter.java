@@ -2,7 +2,7 @@ package com.youyu.product.infrastructure.persistence.converter;
 
 import java.math.BigDecimal;
 
-import com.youyu.product.domain.aggregate.Product;
+import com.youyu.product.domain.model.Product;
 import com.youyu.product.infrastructure.persistence.entity.ProductDO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

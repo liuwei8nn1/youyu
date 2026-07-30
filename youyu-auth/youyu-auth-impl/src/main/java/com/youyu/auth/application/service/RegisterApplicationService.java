@@ -3,7 +3,7 @@ package com.youyu.auth.application.service;
 import com.youyu.auth.api.dto.RegisterRequest;
 import com.youyu.auth.api.dto.RegisterResponse;
 import com.youyu.framework.context.UserType;
-import com.youyu.auth.domain.aggregate.UserIdentity;
+import com.youyu.auth.domain.model.UserIdentity;
 import com.youyu.auth.domain.repository.UserIdentityRepository;
 import com.youyu.auth.infrastructure.external.adapter.UserServiceAdapter;
 import com.youyu.user.api.dto.CreateUserRequest;

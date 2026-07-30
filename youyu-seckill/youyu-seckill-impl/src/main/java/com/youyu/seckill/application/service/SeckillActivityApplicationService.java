@@ -1,13 +1,20 @@
 package com.youyu.seckill.application.service;
 
 import com.youyu.common.model.Result;
-import com.youyu.seckill.domain.aggregate.SeckillActivity;
+import com.youyu.seckill.domain.model.SeckillActivity;
 import com.youyu.seckill.domain.repository.SeckillActivityRepository;
 import com.youyu.seckill.domain.service.SeckillStockDomainService;
+import com.youyu.seckill.interfaces.converter.SeckillActivityConverter;
+import com.youyu.seckill.interfaces.vo.SeckillActivityRequest;
+import com.youyu.seckill.interfaces.vo.SeckillActivityVO;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 秒杀活动应用服务（应用层）
@@ -27,6 +34,17 @@ public class SeckillActivityApplicationService {
     @Resource
     private SeckillStockDomainService stockDomainService;
 
+    public List<SeckillActivityVO> listAll() {
+        return activityRepository.listAll().stream()
+                .map(SeckillActivityConverter.INSTANCE::toVO)
+                .collect(Collectors.toList());
+    }
+
+    public SeckillActivityVO getById(Long id) {
+        SeckillActivity activity = activityRepository.findById(id);
+        return activity != null ? SeckillActivityConverter.INSTANCE.toVO(activity) : null;
+    }
+
     /**
      * 创建秒杀活动
      * <p>
@@ -37,58 +55,59 @@ public class SeckillActivityApplicationService {
      * 注意：
      * - 两步操作在同一事务中，保证数据一致性
      *
-     * @param activity 活动聚合根
+     * @param request 活动请求
      * @return 操作结果
      */
     @Transactional(rollbackFor = Exception.class)
-    public Result<Void> createActivity(SeckillActivity activity) {
+    public Result<Void> createActivity(SeckillActivityRequest request) {
         try {
-            // 1. 保存到数据库
+            SeckillActivity activity = SeckillActivity.create(
+                    request.getProductId(), request.getStartTime(), request.getEndTime(),
+                    request.getStock(), request.getLimitPerUser(), request.getSeckillPrice());
+            activity.validate();
+
             activityRepository.save(activity);
-            
-            // 2. 同步到 Redis（包含库存初始化）
             stockDomainService.cacheActivity(activity);
-            
+
             log.info("秒杀活动创建成功，productId: {}", activity.getProductId());
             return Result.success();
+        } catch (IllegalArgumentException e) {
+            return Result.error("参数错误：" + e.getMessage());
         } catch (Exception e) {
-            log.error("创建秒杀活动失败，productId: {}", activity != null ? activity.getProductId() : null, e);
+            log.error("创建秒杀活动失败", e);
             throw new RuntimeException("创建秒杀活动失败", e);
         }
     }
 
-    /**
-     * 更新秒杀活动
-     * <p>
-     * 业务流程：
-     * 1. 更新数据库中的活动信息
-     * 2. 同步更新Redis缓存（使用Pipeline批量操作）
-     * <p>
-     * 注意：
-     * - 两步操作在同一事务中，保证数据一致性
-     * - 如果Redis更新失败，整个事务回滚
-     *
-     * @param activity 活动聚合根
-     * @return 操作结果
-     */
     @Transactional(rollbackFor = Exception.class)
-    public Result<Void> updateActivity(SeckillActivity activity) {
+    public Result<Void> updateActivity(SeckillActivityRequest request) {
         try {
-            // 参数校验
-            if (activity == null || activity.getId() == null) {
-                return Result.error("活动信息不完整");
+            if (request.getId() == null) {
+                return Result.error("活动ID不能为空");
             }
 
-            // 1. 更新数据库
+            SeckillActivity existing = activityRepository.findById(request.getId());
+            if (existing == null) {
+                return Result.error("活动不存在");
+            }
+
+            SeckillActivity activity = SeckillActivity.restore(
+                    request.getId(), request.getProductId(),
+                    request.getStartTime(), request.getEndTime(),
+                    request.getStock(), request.getLimitPerUser(),
+                    request.getSeckillPrice(),
+                    existing.getCreateTime(), LocalDateTime.now());
+            activity.validate();
+
             activityRepository.update(activity);
-            
-            // 2. 同步到 Redis（使用 Pipeline 批量操作）
             stockDomainService.cacheActivity(activity);
-            
+
             log.info("秒杀活动更新成功，id: {}", activity.getId());
             return Result.success();
+        } catch (IllegalArgumentException e) {
+            return Result.error("参数错误：" + e.getMessage());
         } catch (Exception e) {
-            log.error("更新秒杀活动失败，id: {}", activity != null ? activity.getId() : null, e);
+            log.error("更新秒杀活动失败，id: {}", request.getId(), e);
             throw new RuntimeException("更新秒杀活动失败", e);
         }
     }

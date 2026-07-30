@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.youyu.product.api.dto.ProductDetailDTO;
-import com.youyu.product.domain.aggregate.*;
+import com.youyu.product.domain.model.*;
 import com.youyu.product.domain.repository.*;
 import com.youyu.product.domain.service.ProductDomainService;
 import lombok.RequiredArgsConstructor;

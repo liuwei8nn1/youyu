@@ -3,7 +3,7 @@ package com.youyu.auth.infrastructure.persistence.repository;
 import java.util.*;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.youyu.auth.domain.entity.Menu;
+import com.youyu.auth.domain.model.Menu;
 import com.youyu.auth.domain.repository.MenuRepository;
 import com.youyu.auth.infrastructure.persistence.converter.MenuConverter;
 import com.youyu.auth.infrastructure.persistence.entity.MenuDO;

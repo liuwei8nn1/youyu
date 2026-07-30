@@ -1,6 +1,6 @@
 package com.youyu.product.domain.repository;
 
-import com.youyu.product.domain.aggregate.PriceHistory;
+import com.youyu.product.domain.model.PriceHistory;
 
 import java.util.List;
 

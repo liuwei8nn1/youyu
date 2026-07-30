@@ -1,6 +1,6 @@
 package com.youyu.seckill.infrastructure.persistence.converter;
 
-import com.youyu.seckill.domain.aggregate.SeckillActivity;
+import com.youyu.seckill.domain.model.SeckillActivity;
 import com.youyu.seckill.infrastructure.persistence.entity.SeckillActivityDO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

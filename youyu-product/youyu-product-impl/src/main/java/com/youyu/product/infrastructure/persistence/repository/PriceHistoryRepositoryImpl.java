@@ -2,7 +2,7 @@ package com.youyu.product.infrastructure.persistence.repository;
 
 import com.youyu.framework.datasource.mybatis.BaseRepositoryImpl;
 import com.youyu.framework.datasource.mybatis.SmartQueryWrapper;
-import com.youyu.product.domain.aggregate.PriceHistory;
+import com.youyu.product.domain.model.PriceHistory;
 import com.youyu.product.domain.repository.PriceHistoryRepository;
 import com.youyu.product.infrastructure.persistence.converter.PriceHistoryConverter;
 import com.youyu.product.infrastructure.persistence.entity.PriceHistoryDO;

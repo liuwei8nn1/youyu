@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.youyu.framework.datasource.mybatis.BaseRepositoryImpl;
 import com.youyu.framework.datasource.mybatis.SmartQueryWrapper;
 import com.youyu.framework.web.util.PageUtil;
-import com.youyu.user.impl.domain.entity.Employee;
+import com.youyu.user.impl.domain.model.Employee;
 import com.youyu.user.impl.domain.repository.EmployeeRepository;
 import com.youyu.user.impl.infrastructure.persistence.converter.EmployeeConverter;
 import com.youyu.user.impl.infrastructure.persistence.entity.EmployeeDO;

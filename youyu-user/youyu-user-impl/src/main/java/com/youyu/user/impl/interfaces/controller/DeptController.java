@@ -2,7 +2,7 @@ package com.youyu.user.impl.interfaces.controller;
 
 import com.youyu.common.model.Result;
 import com.youyu.user.impl.application.service.DeptApplicationService;
-import com.youyu.user.impl.domain.aggregate.Dept;
+import com.youyu.user.impl.interfaces.vo.DeptVO;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -69,8 +69,8 @@ public class DeptController {
      * 获取部门树
      */
     @GetMapping("/tree")
-    public Result<List<Dept>> getDeptTree() {
-        List<Dept> depts = deptApplicationService.getDeptTree();
+    public Result<List<DeptVO>> getDeptTree() {
+        List<DeptVO> depts = deptApplicationService.getDeptTree();
         return Result.success(depts);
     }
 
@@ -78,8 +78,8 @@ public class DeptController {
      * 获取所有部门（平铺列表）
      */
     @GetMapping("/all")
-    public Result<List<Dept>> getAllDepts() {
-        List<Dept> depts = deptApplicationService.getAllDepts();
+    public Result<List<DeptVO>> getAllDepts() {
+        List<DeptVO> depts = deptApplicationService.getAllDepts();
         return Result.success(depts);
     }
 

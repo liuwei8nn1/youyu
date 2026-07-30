@@ -4,9 +4,11 @@ import com.youyu.common.exception.DomainException;
 import com.youyu.common.util.CheckDigitUtil;
 import com.youyu.framework.context.I18N;
 import com.youyu.order.api.dto.SeckillOrderTimeoutMessage;
-import com.youyu.order.domain.aggregate.Order;
-import com.youyu.order.domain.valueobject.ShippingAddress;
+import com.youyu.order.domain.model.Order;
+import com.youyu.order.domain.model.ShippingAddress;
 import com.youyu.order.domain.repository.OrderRepository;
+import com.youyu.order.interfaces.converter.OrderConverter;
+import com.youyu.order.interfaces.vo.OrderVO;
 import com.youyu.order.domain.repository.ProductRepository;
 import com.youyu.order.domain.repository.UserRepository;
 import com.youyu.order.domain.service.OrderDomainService;
@@ -48,10 +50,10 @@ public class OrderApplicationService {
      * @param userId    用户ID
      * @param productId 商品ID
      * @param quantity  购买数量
-     * @return 订单聚合根
+     * @return 订单视图对象
      */
     @Transactional(rollbackFor = Exception.class)
-    public Order createOrder(Long userId, Long productId, Integer quantity) {
+    public OrderVO createOrder(Long userId, Long productId, Integer quantity) {
         log.info("普通订单创建开始，userId: {}, productId: {}, quantity: {}", userId, productId, quantity);
 
         // 1. 查询商品详情
@@ -82,7 +84,7 @@ public class OrderApplicationService {
 
         log.info("普通订单创建成功，orderId: {}, orderNo: {}, amount: {}", 
             order.getId(), order.getOrderNo(), order.getAmount());
-        return order;
+        return OrderConverter.INSTANCE.toVO(order);
     }
 
     /**
@@ -244,14 +246,16 @@ public class OrderApplicationService {
         log.info("秒杀订单库存回滚消息发送成功，orderId: {}, activityId: {}", orderId, activityId);
     }
 
-    public Order getOrderById(Long orderId) {
+    public OrderVO getOrderById(Long orderId) {
         return orderRepository.findById(orderId)
-            .orElseThrow(() -> new RuntimeException("订单不存在，orderId: " + orderId));
+                .map(OrderConverter.INSTANCE::toVO)
+                .orElseThrow(() -> new RuntimeException("订单不存在，orderId: " + orderId));
     }
 
-    public Order getOrderByOrderNo(String orderNo) {
+    public OrderVO getOrderByOrderNo(String orderNo) {
         I18N.assertTrue(CheckDigitUtil.validate(orderNo));
         return orderRepository.findByOrderNo(orderNo)
-            .orElseThrow(() -> new RuntimeException("订单不存在，orderNo: " + orderNo));
+                .map(OrderConverter.INSTANCE::toVO)
+                .orElseThrow(() -> new RuntimeException("订单不存在，orderNo: " + orderNo));
     }
 }

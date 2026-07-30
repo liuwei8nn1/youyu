@@ -1,7 +1,7 @@
 package com.youyu.product.infrastructure.persistence.repository;
 
 import com.youyu.framework.datasource.mybatis.BaseRepositoryImpl;
-import com.youyu.product.domain.aggregate.Product;
+import com.youyu.product.domain.model.Product;
 import com.youyu.product.domain.repository.ProductRepository;
 import com.youyu.product.infrastructure.persistence.converter.ProductConverter;
 import com.youyu.product.infrastructure.persistence.entity.ProductDO;

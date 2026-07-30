@@ -3,7 +3,7 @@ package com.youyu.seckill.infrastructure.persistence.repository;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.youyu.framework.datasource.mybatis.BaseRepositoryImpl;
 import com.youyu.framework.datasource.mybatis.SmartQueryWrapper;
-import com.youyu.seckill.domain.aggregate.SeckillActivity;
+import com.youyu.seckill.domain.model.SeckillActivity;
 import com.youyu.seckill.domain.repository.SeckillActivityRepository;
 import com.youyu.seckill.infrastructure.persistence.converter.SeckillActivityConverter;
 import com.youyu.seckill.infrastructure.persistence.entity.SeckillActivityDO;

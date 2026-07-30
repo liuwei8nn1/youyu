@@ -1,6 +1,6 @@
 package com.youyu.order.infrastructure.external.adapter;
 
-import com.youyu.order.domain.valueobject.ShippingAddress;
+import com.youyu.order.domain.model.ShippingAddress;
 import com.youyu.order.domain.repository.UserRepository;
 import com.youyu.order.infrastructure.external.acl.UserServiceClient;
 import lombok.RequiredArgsConstructor;

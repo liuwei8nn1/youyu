@@ -1,6 +1,6 @@
 package com.youyu.order.domain.repository;
 
-import com.youyu.order.domain.valueobject.ShippingAddress;
+import com.youyu.order.domain.model.ShippingAddress;
 import java.util.Optional;
 
 /**

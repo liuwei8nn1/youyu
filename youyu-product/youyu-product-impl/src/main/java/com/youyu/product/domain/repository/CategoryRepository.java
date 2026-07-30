@@ -3,7 +3,7 @@ package com.youyu.product.domain.repository;
 import java.util.List;
 import java.util.Optional;
 
-import com.youyu.product.domain.aggregate.Category;
+import com.youyu.product.domain.model.Category;
 
 public interface CategoryRepository {
 

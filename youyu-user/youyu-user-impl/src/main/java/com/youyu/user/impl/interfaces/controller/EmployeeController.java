@@ -1,17 +1,17 @@
 package com.youyu.user.impl.interfaces.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.youyu.common.model.Result;
 import com.youyu.framework.context.web.resolver.ProxyRequest;
 import com.youyu.user.impl.application.service.EmployeeApplicationService;
 import com.youyu.user.impl.application.service.EmployeeApplicationService.CreateEmployeeRequest;
 import com.youyu.user.impl.application.service.EmployeeApplicationService.UpdateEmployeeRequest;
-import com.youyu.user.impl.domain.entity.Employee;
+import com.youyu.user.impl.interfaces.vo.EmployeeVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -56,11 +56,11 @@ public class EmployeeController {
      * 分页查询员工列表
      */
     @GetMapping("/list")
-    public Result<Page<Employee>> listEmployees(ProxyRequest q,
-                                                @RequestParam(value = "keyword", required = false) String keyword,
-                                                @RequestParam(value = "deptId", required = false) Long deptId,
-                                                @RequestParam(value = "status", required = false) Integer status) {
-        Page<Employee> page = employeeApplicationService.listEmployees(q.getPage(), keyword, deptId, status);
+    public Result<Page<EmployeeVO>> listEmployees(ProxyRequest q,
+                                                   @RequestParam(value = "keyword", required = false) String keyword,
+                                                   @RequestParam(value = "deptId", required = false) Long deptId,
+                                                   @RequestParam(value = "status", required = false) Integer status) {
+        Page<EmployeeVO> page = employeeApplicationService.listEmployees(q.getPage(), keyword, deptId, status);
         return Result.success(page);
     }
 
@@ -68,8 +68,8 @@ public class EmployeeController {
      * 获取员工详情
      */
     @GetMapping("/{id}")
-    public Result<Employee> getEmployee(@PathVariable Long id) {
-        Employee employee = employeeApplicationService.getEmployee(id);
+    public Result<EmployeeVO> getEmployee(@PathVariable Long id) {
+        EmployeeVO employee = employeeApplicationService.getEmployee(id);
         return Result.success(employee);
     }
 }

@@ -2,7 +2,7 @@ package com.youyu.product.domain.repository;
 
 import java.util.Optional;
 
-import com.youyu.product.domain.aggregate.Product;
+import com.youyu.product.domain.model.Product;
 
 public interface ProductRepository {
 

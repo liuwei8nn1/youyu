@@ -2,7 +2,7 @@ package com.youyu.product.infrastructure.persistence.repository;
 
 import com.youyu.framework.datasource.mybatis.BaseRepositoryImpl;
 import com.youyu.framework.datasource.mybatis.SmartQueryWrapper;
-import com.youyu.product.domain.aggregate.StockFlow;
+import com.youyu.product.domain.model.StockFlow;
 import com.youyu.product.domain.repository.StockFlowRepository;
 import com.youyu.product.infrastructure.persistence.converter.StockFlowConverter;
 import com.youyu.product.infrastructure.persistence.entity.StockFlowDO;

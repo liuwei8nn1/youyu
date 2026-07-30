@@ -2,7 +2,7 @@ package com.youyu.order.infrastructure.persistence.repository;
 
 import com.youyu.framework.datasource.mybatis.BaseRepositoryImpl;
 import com.youyu.framework.datasource.mybatis.SmartQueryWrapper;
-import com.youyu.order.domain.aggregate.Order;
+import com.youyu.order.domain.model.Order;
 import com.youyu.order.domain.repository.OrderRepository;
 import com.youyu.order.infrastructure.persistence.converter.OrderConverter;
 import com.youyu.order.infrastructure.persistence.entity.OrderDO;

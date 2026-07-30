@@ -2,10 +2,15 @@ package com.youyu.user.impl.application.service;
 
 import com.youyu.framework.context.UserType;
 import com.youyu.user.api.dto.UserProfileCreateRequest;
-import com.youyu.user.impl.domain.aggregate.UserProfile;
-import com.youyu.user.impl.domain.entity.Address;
-import com.youyu.user.impl.domain.entity.*;
+import com.youyu.user.impl.domain.model.UserProfile;
+import com.youyu.user.impl.domain.model.Address;
+import com.youyu.user.impl.domain.model.*;
+import com.youyu.user.impl.domain.model.Customer;
 import com.youyu.user.impl.domain.repository.AddressRepository;
+import com.youyu.user.impl.interfaces.converter.AddressConverter;
+import com.youyu.user.impl.interfaces.converter.UserProfileConverter;
+import com.youyu.user.impl.interfaces.vo.AddressVO;
+import com.youyu.user.impl.interfaces.vo.UserProfileVO;
 import com.youyu.user.impl.domain.repository.CustomerRepository;
 import com.youyu.user.impl.domain.repository.EmployeeRepository;
 import com.youyu.user.impl.domain.repository.PlatformUserRepository;
@@ -114,8 +119,9 @@ public class UserProfileApplicationService {
     /**
      * 获取用户资料
      */
-    public Optional<UserProfile> getUserProfile(Long identityId) {
-        return userProfileRepository.findByIdentityId(identityId);
+    public Optional<UserProfileVO> getUserProfile(Long identityId) {
+        return userProfileRepository.findByIdentityId(identityId)
+                .map(UserProfileConverter.INSTANCE::toVO);
     }
 
     /**
@@ -143,8 +149,10 @@ public class UserProfileApplicationService {
     /**
      * 获取用户地址列表
      */
-    public List<Address> getUserAddresses(Long userId) {
-        return addressRepository.findByUserId(userId);
+    public List<AddressVO> getUserAddresses(Long userId) {
+        return addressRepository.findByUserId(userId).stream()
+                .map(AddressConverter.INSTANCE::toVO)
+                .collect(java.util.stream.Collectors.toList());
     }
 
     /**
@@ -217,4 +225,5 @@ public class UserProfileApplicationService {
         address.setAsDefault();
         addressRepository.update(address);
     }
+
 }

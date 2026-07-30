@@ -4,8 +4,8 @@ import java.util.Optional;
 
 import com.youyu.user.api.dto.AddressDTO;
 import com.youyu.user.api.dto.UserLoginInfo;
-import com.youyu.user.impl.domain.aggregate.UserProfile;
-import com.youyu.user.impl.domain.entity.Address;
+import com.youyu.user.impl.domain.model.UserProfile;
+import com.youyu.user.impl.domain.model.Address;
 import com.youyu.user.impl.domain.repository.AddressRepository;
 import com.youyu.user.impl.domain.repository.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
