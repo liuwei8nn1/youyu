@@ -3,6 +3,7 @@ package com.youyu.seckill.interfaces.controller;
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.youyu.common.model.Result;
+import com.youyu.framework.context.I18N;
 import com.youyu.seckill.application.dto.SeckillOrderResponse;
 import com.youyu.seckill.application.service.SeckillActivityApplicationService;
 import com.youyu.seckill.application.service.SeckillOrderApplicationService;
@@ -121,17 +122,10 @@ public class SeckillController {
                                                 @RequestHeader("X-User-Id") String userId,
                                                 @RequestParam(value = "quantity", defaultValue = "1") Integer quantity) {
         try {
-            // 参数校验
-            if (productId == null || productId <= 0) {
-                return Result.error("商品ID无效");
-            }
-            if (userId == null || userId.isEmpty()) {
-                return Result.error("用户ID不能为空");
-            }
-            if (quantity == null || quantity <= 0) {
-                return Result.error("购买数量必须大于0");
-            }
-
+            // todo 报错国际化
+	        I18N.assertFalse(productId == null || productId <= 0);
+            I18N.assertFalse(userId == null || userId.isEmpty());
+            I18N.assertFalse(quantity == null || quantity <= 0);
             // 调用应用服务，直接返回Result
             return seckillOrderService.createSeckillOrder(
                     Long.parseLong(userId), productId, quantity);

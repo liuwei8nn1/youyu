@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.youyu.framework.cache.redis.RedisKey;
+import com.youyu.framework.cache.redis.RedisKeys;
 import com.youyu.framework.cache.sync.alert.*;
 import com.youyu.framework.cache.sync.config.CacheSyncProperties;
 import com.github.benmanes.caffeine.cache.Cache;
@@ -118,7 +118,7 @@ public class CacheSyncConsumer implements ApplicationContextAware, SmartInitiali
 			// 确保 Stream 存在
 			try {
 				// 尝试添加一个空消息来创建 Stream（如果不存在）
-				stringRedisTemplate.opsForStream().add(RedisKey.calcStreamKey(properties.getPrefixKey()), new HashMap<>());
+				stringRedisTemplate.opsForStream().add(RedisKeys.calcStreamKey(properties.getPrefixKey()), new HashMap<>());
 			} catch (Exception e) {
 				// Stream 可能已经存在，忽略异常
 			}
@@ -126,7 +126,7 @@ public class CacheSyncConsumer implements ApplicationContextAware, SmartInitiali
 			// 尝试创建消费者组
 			try {
 				stringRedisTemplate.opsForStream().createGroup(
-						RedisKey.calcStreamKey(properties.getPrefixKey()),
+						RedisKeys.calcStreamKey(properties.getPrefixKey()),
 						consumerGroup
 				);
 				logger.info("===========>>>>>>> Created consumer group: {}", consumerGroup);
@@ -161,7 +161,7 @@ public class CacheSyncConsumer implements ApplicationContextAware, SmartInitiali
 	private void consumeMessages(String consumerName) {
 		while (running.get() && !Thread.currentThread().isInterrupted()) {
 			try {
-				String streamKey = RedisKey.calcStreamKey(properties.getPrefixKey());
+				String streamKey = RedisKeys.calcStreamKey(properties.getPrefixKey());
 				List<MapRecord<String, Object, Object>> messages = stringRedisTemplate.opsForStream().read(
 						Consumer.from(consumerGroup, consumerName),
 						StreamReadOptions.empty()
@@ -211,7 +211,7 @@ public class CacheSyncConsumer implements ApplicationContextAware, SmartInitiali
 			// 确保消费者组存在
 			createConsumerGroup();
 
-			String streamKey = RedisKey.calcStreamKey(properties.getPrefixKey());
+			String streamKey = RedisKeys.calcStreamKey(properties.getPrefixKey());
 			PendingMessagesSummary pendingSummary = stringRedisTemplate.opsForStream().pending(
 					streamKey,
 					consumerGroup
@@ -370,7 +370,7 @@ public class CacheSyncConsumer implements ApplicationContextAware, SmartInitiali
 	 */
 	private void updateLagMetrics() {
 		try {
-			String streamKey = RedisKey.calcStreamKey(properties.getPrefixKey());
+			String streamKey = RedisKeys.calcStreamKey(properties.getPrefixKey());
 			// 使用 RedisCallback 直接访问底层连接，执行 XINFO GROUPS 命令
 			stringRedisTemplate.execute((RedisCallback<?>) connection -> {
 				byte[] keyBytes = stringRedisTemplate.getStringSerializer().serialize(streamKey);
@@ -422,7 +422,7 @@ public class CacheSyncConsumer implements ApplicationContextAware, SmartInitiali
 	 */
 	private void cleanOfflineConsumers() {
 		try {
-			String streamKey = RedisKey.calcStreamKey(properties.getPrefixKey());
+			String streamKey = RedisKeys.calcStreamKey(properties.getPrefixKey());
 			stringRedisTemplate.execute((RedisCallback<?>) connection -> {
 				byte[] keyBytes = stringRedisTemplate.getStringSerializer().serialize(streamKey);
 				try {

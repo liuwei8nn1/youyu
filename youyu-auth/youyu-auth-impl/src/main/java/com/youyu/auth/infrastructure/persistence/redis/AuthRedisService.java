@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.youyu.auth.api.JwtTokenProvider;
-import com.youyu.auth.api.model.RedisKey;
+import com.youyu.auth.api.model.AuthRedisKey;
 import com.youyu.framework.cache.redis.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,7 @@ public class AuthRedisService {
      * @param reason 禁用原因
      */
     public void disableUser(Long identityId, Integer userType, String reason) {
-        String redisKey = RedisKey.buildUserDisableKey(identityId, userType);
+        String redisKey = AuthRedisKey.calcUserDisableKey(identityId, userType);
         redisTemplate.opsForValue().set(redisKey, reason != null ? reason : "disabled");
     }
 
@@ -39,7 +39,7 @@ public class AuthRedisService {
      * @param identityId 用户身份ID
      */
     public void enableUser(Long identityId, Integer userType) {
-        String redisKey = RedisKey.buildUserDisableKey(identityId, userType);
+        String redisKey = AuthRedisKey.calcUserDisableKey(identityId, userType);
         redisTemplate.delete(redisKey);
     }
 
@@ -50,7 +50,7 @@ public class AuthRedisService {
      * @return true-已禁用，false-未禁用
      */
     public boolean isUserDisabled(Long identityId, Integer userType) {
-        String redisKey = RedisKey.buildUserDisableKey(identityId, userType);
+        String redisKey = AuthRedisKey.calcUserDisableKey(identityId, userType);
         return Boolean.TRUE.equals(redisTemplate.hasKey(redisKey));
     }
 
@@ -61,7 +61,7 @@ public class AuthRedisService {
      * @return 禁用原因
      */
     public String getDisableReason(Long identityId,Integer userType) {
-        String redisKey = RedisKey.buildUserDisableKey(identityId, userType);
+        String redisKey = AuthRedisKey.calcUserDisableKey(identityId, userType);
         return redisTemplate.opsForValue().get(redisKey);
     }
 
@@ -80,7 +80,7 @@ public class AuthRedisService {
      */
     public void markDeviceOnline(Long identityId, Integer userType, Long deviceId, long ttl) {
         // 正常在线不需要在 Redis 中存储，直接删除可能存在的"exit"标记
-        String key = RedisKey.buildDeviceKey(identityId, userType, String.valueOf(deviceId));
+        String key = AuthRedisKey.calcDeviceKey(identityId, userType, String.valueOf(deviceId));
         redisTemplate.delete(key);
         log.debug("标记设备在线: identityId={}, userType={}, deviceId={}", identityId, userType, deviceId);
     }
@@ -103,7 +103,7 @@ public class AuthRedisService {
      * @param deviceId 设备ID（UserDevice表的id，Long类型）
      */
     public void markDeviceOffline(Long identityId, Integer userType, Long deviceId) {
-        String key = RedisKey.buildDeviceKey(identityId, userType, String.valueOf(deviceId));
+        String key = AuthRedisKey.calcDeviceKey(identityId, userType, String.valueOf(deviceId));
         long ttl = jwtTokenProvider.getRefreshTokenTtl();
         redisTemplate.opsForValue().set(key, "exit", ttl, TimeUnit.SECONDS);
         log.debug("标记设备离线: identityId={}, userType={}, deviceId={}, ttl={}s", identityId, userType, deviceId, ttl);
@@ -122,7 +122,7 @@ public class AuthRedisService {
      * @return true=在线，false=已退出
      */
     public boolean isDeviceOnline(Long identityId, Integer userType, Long deviceId) {
-        String key = RedisKey.buildDeviceKey(identityId, userType, String.valueOf(deviceId));
+        String key = AuthRedisKey.calcDeviceKey(identityId, userType, String.valueOf(deviceId));
         String value = redisTemplate.opsForValue().get(key);
         
         // key 不存在或已过期 = 在线
@@ -151,7 +151,7 @@ public class AuthRedisService {
         
         RedisUtil.execInPipeline((opt) -> {
             deviceIds.forEach(deviceId -> {
-                String key = RedisKey.buildDeviceKey(identityId, userType, String.valueOf(deviceId));
+                String key = AuthRedisKey.calcDeviceKey(identityId, userType, String.valueOf(deviceId));
                 redisTemplate.opsForValue().set(key, "exit", ttl, TimeUnit.SECONDS);
             });
         });
@@ -181,7 +181,7 @@ public class AuthRedisService {
      * @param deviceId 设备ID（UserDevice表的id，Long类型）
      */
     public void updatePresence(Long identityId, Integer userType, Long deviceId) {
-        String key = RedisKey.buildPresenceKey(identityId, userType);
+        String key = AuthRedisKey.calcPresenceKey(identityId, userType);
         long now = System.currentTimeMillis();
         // Value 格式：deviceId:timestamp
         String value = deviceId + ":" + now;
@@ -201,7 +201,7 @@ public class AuthRedisService {
      * @return true=在线，false=离线
      */
     public boolean isUserOnline(Long identityId, Integer userType) {
-        String key = RedisKey.buildPresenceKey(identityId, userType);
+        String key = AuthRedisKey.calcPresenceKey(identityId, userType);
         return Boolean.TRUE.equals(redisTemplate.hasKey(key));
     }
 
@@ -213,7 +213,7 @@ public class AuthRedisService {
      * @return 最后活跃信息，null表示离线
      */
     public PresenceInfo getLastActiveInfo(Long identityId, Integer userType) {
-        String key = RedisKey.buildPresenceKey(identityId, userType);
+        String key = AuthRedisKey.calcPresenceKey(identityId, userType);
         String value = redisTemplate.opsForValue().get(key);
         
         if (value == null) {

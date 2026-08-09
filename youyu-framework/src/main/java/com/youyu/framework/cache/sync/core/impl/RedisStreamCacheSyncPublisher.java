@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.youyu.framework.cache.sync.alert.*;
 import com.youyu.framework.cache.sync.config.CacheSyncProperties;
-import com.youyu.framework.cache.redis.RedisKey;
+import com.youyu.framework.cache.redis.RedisKeys;
 import com.youyu.framework.cache.sync.metrics.CacheSyncMetrics;
 import com.youyu.framework.cache.sync.core.CacheSyncPublisher;
 import com.youyu.framework.cache.sync.core.InternalMessage;
@@ -117,15 +117,15 @@ public class RedisStreamCacheSyncPublisher implements CacheSyncPublisher, Dispos
 				// 生成唯一的消息ID（去掉UUID中的横杠）
 				String messageId = UUID.randomUUID().toString().replace("-", "");
 				// 将消息存储到 Redis Hash 中
-				String hashKey = RedisKey.calcDelayedMessageKey(properties.getPrefixKey(), messageId);
+				String hashKey = RedisKeys.calcDelayedMessageKey(properties.getPrefixKey(), messageId);
 				stringRedisTemplate.opsForHash().putAll(hashKey, message);
 				// 将消息ID添加到 zset 中
-				stringRedisTemplate.opsForZSet().add(RedisKey.calcDelayedKey(properties.getPrefixKey()), messageId, expireTime);
+				stringRedisTemplate.opsForZSet().add(RedisKeys.calcDelayedKey(properties.getPrefixKey()), messageId, expireTime);
 				return;
 			}
 		}
 		// 立即执行
-		cacheClean(RedisKey.calcStreamKey(properties.getPrefixKey()), message);
+		cacheClean(RedisKeys.calcStreamKey(properties.getPrefixKey()), message);
 	}
 
 	private void cacheClean(String streamKey, Map<String, String> message) {
@@ -207,7 +207,7 @@ public class RedisStreamCacheSyncPublisher implements CacheSyncPublisher, Dispos
 				end
 				return msgs
 				""";
-		String delayedKey = RedisKey.calcDelayedKey(properties.getPrefixKey());
+		String delayedKey = RedisKeys.calcDelayedKey(properties.getPrefixKey());
 		List<String> messageIds = stringRedisTemplate.execute(
 				connection -> {
 					byte[] keyBytes = stringRedisTemplate.getStringSerializer().serialize(delayedKey);
@@ -254,7 +254,7 @@ public class RedisStreamCacheSyncPublisher implements CacheSyncPublisher, Dispos
 		try {
 			String baseMessageId = extractBaseMessageId(messageId);
 			// 从 Redis Hash 中获取消息内容
-			String messageHashKey = RedisKey.calcDelayedMessageKey(properties.getPrefixKey(), baseMessageId);
+			String messageHashKey = RedisKeys.calcDelayedMessageKey(properties.getPrefixKey(), baseMessageId);
 			Map<Object, Object> hashEntries = stringRedisTemplate.opsForHash().entries(messageHashKey);
 			if (!hashEntries.isEmpty()) {
 				// 转换为 Map<String, String>
@@ -265,7 +265,7 @@ public class RedisStreamCacheSyncPublisher implements CacheSyncPublisher, Dispos
 					}
 				}
 				// 发布消息
-				cacheClean(RedisKey.calcStreamKey(properties.getPrefixKey()), message);
+				cacheClean(RedisKeys.calcStreamKey(properties.getPrefixKey()), message);
 			}
 			// 成功后删除临时消息，避免 Redis 数据积累
 			stringRedisTemplate.delete(messageHashKey);

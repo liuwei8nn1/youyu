@@ -1,6 +1,6 @@
 package com.youyu.auth.application.service;
 
-import com.youyu.auth.api.model.RedisKey;
+import com.youyu.auth.api.model.AuthRedisKey;
 import com.youyu.auth.domain.model.UserDevice;
 import com.youyu.auth.domain.model.UserIdentity;
 import com.youyu.auth.domain.repository.UserDeviceRepository;
@@ -267,8 +267,8 @@ public class LoginApplicationService {
         log.info("用户登出，identityId: {}, deviceId: {}", identityId, deviceId);
 
         // 使用管道批量执行 Redis 操作
-        String deviceKey = RedisKey.buildDeviceKey(identityId, userType, String.valueOf(deviceId));
-        String presenceKey = RedisKey.buildPresenceKey(identityId, userType);
+        String deviceKey = AuthRedisKey.calcDeviceKey(identityId, userType, String.valueOf(deviceId));
+        String presenceKey = AuthRedisKey.calcPresenceKey(identityId, userType);
         long ttl = jwtTokenProvider.getRefreshTokenTtl();
         
         RedisUtil.execInPipeline(redisOps -> {
@@ -300,11 +300,11 @@ public class LoginApplicationService {
             // 2. 使用管道批量标记所有设备离线
             List<Long> deviceIds = CollectionUtil.toList(onlineDevices, UserDevice::getId);
             long ttl = jwtTokenProvider.getRefreshTokenTtl();
-            String presenceKey = RedisKey.buildPresenceKey(identityId, userType);
+            String presenceKey = AuthRedisKey.calcPresenceKey(identityId, userType);
 
             RedisUtil.execInPipeline(redisOps -> {
                 for (Long deviceId : deviceIds) {
-                    String deviceKey = RedisKey.buildDeviceKey(identityId, userType, String.valueOf(deviceId));
+                    String deviceKey = AuthRedisKey.calcDeviceKey(identityId, userType, String.valueOf(deviceId));
                     redisOps.opsForValue().set(deviceKey, "exit", ttl, TimeUnit.SECONDS);
                 }
 
@@ -335,17 +335,17 @@ public class LoginApplicationService {
             if (!devicesToKick.isEmpty()) {
                 long ttl = jwtTokenProvider.getRefreshTokenTtl();
                 for (Long kickDeviceId : devicesToKick) {
-                    String key = com.youyu.auth.api.model.RedisKey.buildDeviceKey(identityId, userType, String.valueOf(kickDeviceId));
+                    String key = AuthRedisKey.calcDeviceKey(identityId, userType, String.valueOf(kickDeviceId));
                     redisOps.opsForValue().set(key, "exit", ttl, TimeUnit.SECONDS);
                 }
             }
             
             // 2. 标记当前设备在线（删除可能存在的"exit"标记）
-            String currentDeviceKey = com.youyu.auth.api.model.RedisKey.buildDeviceKey(identityId, userType, String.valueOf(deviceId));
+            String currentDeviceKey = AuthRedisKey.calcDeviceKey(identityId, userType, String.valueOf(deviceId));
             redisOps.delete(currentDeviceKey);
             
             // 3. 更新用户在线状态
-            String presenceKey = com.youyu.auth.api.model.RedisKey.buildPresenceKey(identityId, userType);
+            String presenceKey = AuthRedisKey.calcPresenceKey(identityId, userType);
             long now = System.currentTimeMillis();
             String presenceValue = deviceId + ":" + now;
             long presenceTtl = jwtTokenProvider.getAccessTokenTtl() + 60; // TTL = AccessToken TTL + 缓冲时间

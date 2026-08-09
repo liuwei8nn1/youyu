@@ -145,6 +145,9 @@ public class I18N {
         return obj;
     }
 
+    public static void assertFalse(boolean result) {
+        assertTrue(!result);
+    }
     public static void assertFalse(boolean result, String msgCode) {
         assertTrue(!result, msgCode);
     }

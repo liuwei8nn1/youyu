@@ -8,7 +8,7 @@ import java.util.concurrent.*;
 import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import com.youyu.framework.cache.redis.RedisKeyBuilder;
+import com.youyu.framework.cache.redis.RedisKeys;
 
 /**
  * Snowflake WorkerId 分配器
@@ -134,7 +134,7 @@ public class SnowflakeWorkerIdAllocator {
     private int allocateId(String key, int maxId) {
         // 尝试获取已分配的ID
         for (int i = 0; i <= maxId; i++) {
-            String fieldKey = key + RedisKeyBuilder.SEPARATOR + i;
+            String fieldKey = key + RedisKeys.SEPARATOR + i;
             Boolean exists = redisTemplate.hasKey(fieldKey);
             if (Boolean.FALSE.equals(exists)) {
                 // 该ID未被占用，尝试分配
@@ -162,15 +162,15 @@ public class SnowflakeWorkerIdAllocator {
 
     private String builderKey(@Nullable String businessKey, int dataCenterId){
         if(businessKey == null){
-            return redisPrefix + RedisKeyBuilder.SEPARATOR + WORKER_ID_KEY + RedisKeyBuilder.SEPARATOR + dataCenterId;
+            return redisPrefix + RedisKeys.SEPARATOR + WORKER_ID_KEY + RedisKeys.SEPARATOR + dataCenterId;
         }
-        return redisPrefix + RedisKeyBuilder.SEPARATOR + WORKER_ID_KEY + RedisKeyBuilder.SEPARATOR + businessKey +  RedisKeyBuilder.SEPARATOR + dataCenterId;
+        return redisPrefix + RedisKeys.SEPARATOR + WORKER_ID_KEY + RedisKeys.SEPARATOR + businessKey +  RedisKeys.SEPARATOR + dataCenterId;
     }
 
     public int allocateWorkerId(String businessKey, int dataCenterId, int maxId) {
         String key = builderKey(businessKey, dataCenterId);
         int i = allocateId( key, maxId);
-        key = key + RedisKeyBuilder.SEPARATOR + i;
+        key = key + RedisKeys.SEPARATOR + i;
         synchronized (allocatorIdList) {
             allocatorIdList.add(key);
         }
@@ -180,7 +180,7 @@ public class SnowflakeWorkerIdAllocator {
     public int allocateWorkerId(int dataCenterId, int maxId) {
         String key = builderKey(null, dataCenterId);
         int i = allocateId(key, maxId);
-        key = key + RedisKeyBuilder.SEPARATOR + i;
+        key = key + RedisKeys.SEPARATOR + i;
         synchronized (allocatorIdList) {
             allocatorIdList.add(key);
         }

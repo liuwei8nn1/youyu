@@ -4,9 +4,9 @@ import java.util.Collections;
 import java.util.List;
 
 import com.youyu.common.constant.BaseI18nKey;
-import com.youyu.framework.cache.redis.RedisKeyBuilder;
 import com.youyu.framework.cache.redis.RedisUtil;
 import com.youyu.framework.context.I18N;
+import com.youyu.product.domain.key.ProductRedisKey;
 import com.youyu.product.domain.model.Product;
 import com.youyu.product.domain.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ public class ProductDomainService {
     public void deductStock(Long productId, Integer quantity) {
         log.info("开始扣减库存，productId: {}, quantity: {}", productId, quantity);
 
-        String stockKey = RedisKeyBuilder.Product.stock(productId);
+        String stockKey = ProductRedisKey.calcStockKey(productId);
         List<String> keys = Collections.singletonList(stockKey);
         List<String> args = Collections.singletonList(quantity.toString());
 
@@ -57,19 +57,19 @@ public class ProductDomainService {
 
     public void rollbackStock(Long productId, Integer quantity) {
         log.info("开始回滚库存，productId: {}, quantity: {}", productId, quantity);
-        String stockKey = RedisKeyBuilder.Product.stock(productId);
+        String stockKey = ProductRedisKey.calcStockKey(productId);
         RedisUtil.opsForValue().increment(stockKey, quantity);
         log.info("库存回滚成功，productId: {}, quantity: {}", productId, quantity);
     }
 
     public Long getStock(Long productId) {
-        String stockKey = RedisKeyBuilder.Product.stock(productId);
+        String stockKey = ProductRedisKey.calcStockKey(productId);
         String stock = RedisUtil.opsForValue().get(stockKey);
         return stock != null ? Long.parseLong(stock) : 0L;
     }
 
     public void initStock(Long productId, Long stock) {
-        String stockKey = RedisKeyBuilder.Product.stock(productId);
+        String stockKey = ProductRedisKey.calcStockKey(productId);
         RedisUtil.opsForValue().set(stockKey, stock.toString());
         log.info("商品库存初始化成功，productId: {}, stock: {}", productId, stock);
     }

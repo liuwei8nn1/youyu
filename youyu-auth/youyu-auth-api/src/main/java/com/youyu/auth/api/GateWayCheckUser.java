@@ -2,7 +2,7 @@ package com.youyu.auth.api;
 
 import java.util.List;
 
-import com.youyu.auth.api.model.RedisKey;
+import com.youyu.auth.api.model.AuthRedisKey;
 import com.youyu.common.util.StringUtil;
 import com.youyu.framework.context.UserInfo;
 import org.jspecify.annotations.*;
@@ -17,8 +17,8 @@ public class GateWayCheckUser {
 	@NullMarked
 	public static List<String> getCheckRedisKeys(UserInfo userInfo){
 		return List.of(
-				RedisKey.buildUserDisableKey(userInfo.getSid(),userInfo.getUserType()),
-				RedisKey.buildDeviceKey(userInfo.getSid(),userInfo.getUserType(),String.valueOf(userInfo.getDeviceId()))
+				AuthRedisKey.calcUserDisableKey(userInfo.getSid(),userInfo.getUserType()),
+				AuthRedisKey.calcDeviceKey(userInfo.getSid(),userInfo.getUserType(),String.valueOf(userInfo.getDeviceId()))
 				);
 	}
 

@@ -6,9 +6,9 @@ import java.util.concurrent.TimeUnit;
 import com.alibaba.fastjson2.JSON;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.youyu.framework.cache.redis.RedisKeyBuilder;
 import com.youyu.common.exception.DomainException;
 import com.youyu.framework.cache.redis.RedisUtil;
+import com.youyu.seckill.domain.key.SeckillRedisKey;
 import com.youyu.seckill.domain.model.SeckillActivity;
 import com.youyu.seckill.domain.repository.SeckillActivityRepository;
 import lombok.RequiredArgsConstructor;
@@ -119,8 +119,8 @@ public class SeckillStockDomainService {
     public Long deductStockAndRecordPurchase(Long productId, Long userId, Integer quantity, Integer limit) {
         log.info("开始扣减秒杀库存并记录购买，productId: {}, userId: {}, quantity: {}", productId, userId, quantity);
 
-        String stockKey = RedisKeyBuilder.Seckill.stock(productId);
-        String userKey = RedisKeyBuilder.Seckill.userLimit(userId, productId);
+        String stockKey = SeckillRedisKey.calcStockKey(productId);
+        String userKey = SeckillRedisKey.calcUserLimitKey(userId, productId);
         List<String> keys = List.of(stockKey, userKey);
         List<String> args = List.of(quantity.toString(), limit.toString());
 
@@ -152,8 +152,8 @@ public class SeckillStockDomainService {
      */
     public void rollbackStockAndPurchase(Long productId, Long userId, Integer quantity) {
         log.info("开始回滚库存和用户购买数量，productId: {}, userId: {}, quantity: {}", productId, userId, quantity);
-        String stockKey = RedisKeyBuilder.Seckill.stock(productId);
-        String userKey = RedisKeyBuilder.Seckill.userLimit(userId, productId);
+        String stockKey = SeckillRedisKey.calcStockKey(productId);
+        String userKey = SeckillRedisKey.calcUserLimitKey(userId, productId);
         RedisUtil.execInPipeline(redisOps -> {
             redisOps.opsForValue().increment(stockKey, quantity);
             redisOps.opsForValue().decrement(userKey, quantity);
@@ -171,7 +171,7 @@ public class SeckillStockDomainService {
      */
     public void rollbackStock(Long productId, Integer quantity) {
         log.info("开始回滚秒杀库存，productId: {}, quantity: {}", productId, quantity);
-        String stockKey = RedisKeyBuilder.Seckill.stock(productId);
+        String stockKey = SeckillRedisKey.calcStockKey(productId);
         RedisUtil.opsForValue().increment(stockKey, quantity);
         log.info("秒杀库存回滚成功，productId: {}, quantity: {}", productId, quantity);
     }
@@ -183,7 +183,7 @@ public class SeckillStockDomainService {
      * @return 当前库存数量
      */
     public Long getStock(Long productId) {
-        String stockKey = RedisKeyBuilder.Seckill.stock(productId);
+        String stockKey = SeckillRedisKey.calcStockKey(productId);
         String stock = RedisUtil.opsForValue().get(stockKey);
         return stock != null ? Long.parseLong(stock) : 0L;
     }
@@ -195,7 +195,7 @@ public class SeckillStockDomainService {
      * @param stock     初始库存
      */
     public void initStock(Long productId, Long stock) {
-        String stockKey = RedisKeyBuilder.Seckill.stock(productId);
+        String stockKey = SeckillRedisKey.calcStockKey(productId);
         RedisUtil.opsForValue().set(stockKey, stock.toString());
         log.info("秒杀商品库存初始化成功，productId: {}, stock: {}", productId, stock);
     }
@@ -208,7 +208,7 @@ public class SeckillStockDomainService {
      * @param quantity  购买数量
      */
     public void recordUserPurchase(Long userId, Long productId, Integer quantity) {
-        String userKey = RedisKeyBuilder.Seckill.userLimit(userId, productId);
+        String userKey = SeckillRedisKey.calcUserLimitKey(userId, productId);
         RedisUtil.opsForValue().increment(userKey, quantity);
         // 设置过期时间为活动结束后 24 小时
         RedisUtil.template().expire(userKey, 86400, java.util.concurrent.TimeUnit.SECONDS);
@@ -226,7 +226,7 @@ public class SeckillStockDomainService {
      */
     public void rollbackUserPurchase(Long userId, Long productId, Integer quantity) {
         log.info("开始回滚用户购买数量，userId: {}, productId: {}, quantity: {}", userId, productId, quantity);
-        String userKey = RedisKeyBuilder.Seckill.userLimit(userId, productId);
+        String userKey = SeckillRedisKey.calcUserLimitKey(userId, productId);
         RedisUtil.opsForValue().decrement(userKey, quantity);
         log.info("用户购买数量回滚成功，userId: {}, productId: {}, quantity: {}", userId, productId, quantity);
     }
@@ -234,7 +234,7 @@ public class SeckillStockDomainService {
     /**
      * 检查用户操作频率限制（防止重复点击）
      * <p>
-     * 双层限流策略（大厂标准做法）：
+     * 双层限流策略
      * 1. 第1层：本地缓存快速拦截（90%的请求在此拦截，无IO）
      * 2. 第2层：Redis严格保证（防止多实例下的漏网之鱼）
      * <p>
@@ -249,7 +249,7 @@ public class SeckillStockDomainService {
      */
     public boolean checkUserFrequencyLimit(Long userId, Long productId) {
         // Redis Key使用完整格式（便于管理和维护）
-        String redisLimitKey = RedisKeyBuilder.Seckill.userFrequencyLimit(userId, productId);
+        String redisLimitKey = SeckillRedisKey.calcUserFrequencyLimitKey(userId, productId);
         
         // 本地缓存Key使用短格式（节省内存，仅内部使用）
         String localCacheKey = "f:" + userId + ":" + productId;
@@ -260,7 +260,7 @@ public class SeckillStockDomainService {
             return false;
         }
         
-        // 第2层：Redis严格检查（使用完整Key）
+        // 第2层：Redis严格检查（使用完整Key,在redis中可读性更强）
         Boolean success = RedisUtil.template().opsForValue()
                 .setIfAbsent(redisLimitKey, "1", 5, TimeUnit.SECONDS);
         
@@ -280,7 +280,7 @@ public class SeckillStockDomainService {
      * @return 已购买数量
      */
     public Integer getUserPurchasedCount(Long userId, Long productId) {
-        String userKey = RedisKeyBuilder.Seckill.userLimit(userId, productId);
+        String userKey = SeckillRedisKey.calcUserLimitKey(userId, productId);
         String count = RedisUtil.opsForValue().get(userKey);
         return count != null ? Integer.parseInt(count) : 0;
     }
@@ -296,9 +296,9 @@ public class SeckillStockDomainService {
      */
     public void cacheActivity(SeckillActivity activity) {
         Long productId = activity.getProductId();
-        String activityKey = RedisKeyBuilder.Seckill.activity(productId);
+        String activityKey = SeckillRedisKey.calcActivityKey(productId);
         String activityJson = JSON.toJSONString(activity);
-        String stockKey = RedisKeyBuilder.Seckill.stock(productId);
+        String stockKey = SeckillRedisKey.calcStockKey(productId);
         
         // 使用管道批量处理
         RedisUtil.execInPipeline(redisOps -> {
@@ -322,7 +322,7 @@ public class SeckillStockDomainService {
     public SeckillActivity getCachedActivity(Long productId) {
         return activityLocalCache.get(productId,(k)->{// Caffeine 的 get 方法保证了缓存加载的原子性，避免并发场景下的缓存击穿
             // query from redis
-            String activityKey = RedisKeyBuilder.Seckill.activity(productId);
+            String activityKey = SeckillRedisKey.calcActivityKey(productId);
             String activityJson = RedisUtil.opsForValue().get(activityKey);
             if (activityJson != null) {
                 SeckillActivity activity = JSON.parseObject(activityJson, SeckillActivity.class);
@@ -349,7 +349,7 @@ public class SeckillStockDomainService {
      */
     public void removeCachedActivity(Long productId) {
         // 删除 Redis 缓存
-        String activityKey = RedisKeyBuilder.Seckill.activity(productId);
+        String activityKey = SeckillRedisKey.calcActivityKey(productId);
         RedisUtil.template().delete(activityKey);
         
         // 删除本地缓存
